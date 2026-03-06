@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoboLab · 全国机器人实验室人才情报平台</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050b14;--bg2:#080f1e;--bg3:#0c1526;--border:#15243a;--border2:#1e3050;
+  --cyan:#00e0ff;--green:#4dff91;--gold:#ffcc44;--purple:#c084fc;--red:#ff6b6b;
+  --text:#b8d0e8;--text2:#6a8ba8;--text3:#344d65;--white:#eaf4ff;
+  --nat:#00e0ff;--min:#4dff91;--key:#ffcc44;--gen:#c084fc;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans SC',sans-serif;display:flex;flex-direction:column;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+nav{flex-shrink:0;height:52px;background:rgba(5,11,20,.96);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);display:flex;align-items:center;padding:0 24px;gap:20px;z-index:200;}
+.nav-logo{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--cyan);letter-spacing:3px;cursor:pointer;white-space:nowrap;text-shadow:0 0 20px rgba(0,224,255,.4);}
+.nav-logo span{color:var(--text3);}
+.nav-links{display:flex;gap:2px;}
+.nbtn{padding:5px 14px;border-radius:6px;font-size:12px;color:var(--text2);cursor:pointer;border:1px solid transparent;transition:all .2s;font-family:'Noto Sans SC',sans-serif;background:none;}
+.nbtn:hover,.nbtn.act{color:var(--cyan);border-color:rgba(0,224,255,.25);background:rgba(0,224,255,.06);}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.nbadge{font-family:'JetBrains Mono',monospace;font-size:9px;padding:3px 8px;border-radius:4px;border:1px solid var(--border);color:var(--text3);}
+.nhot{border-color:rgba(0,224,255,.3);color:var(--cyan);background:rgba(0,224,255,.07);}
+.pg{display:none;flex:1;overflow:hidden;}
+.pg.act{display:flex;flex-direction:column;}
+#pg-home{overflow-y:auto;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(0,224,255,.04),transparent 70%);}
+#pg-map.act{flex-direction:row;}
+#pg-labs{overflow-y:auto;}
+
+/* HOME */
+.hero{min-height:calc(100vh - 52px);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:60px 40px;position:relative;}
+.hero-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(0,224,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,224,255,.03) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(ellipse 80% 80% at 50% 30%,black,transparent);}
+.hero-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:4px;color:var(--cyan);text-transform:uppercase;margin-bottom:18px;animation:fadeUp .7s ease both;}
+.hero-h1{font-family:'Noto Serif SC',serif;font-size:clamp(28px,5vw,60px);font-weight:700;color:var(--white);line-height:1.2;margin-bottom:14px;animation:fadeUp .7s .1s ease both;}
+.hero-h1 em{font-style:normal;background:linear-gradient(120deg,var(--cyan),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{font-size:14px;color:var(--text2);max-width:560px;line-height:1.9;margin-bottom:32px;animation:fadeUp .7s .2s ease both;}
+.hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;animation:fadeUp .7s .3s ease both;}
+.btn-p{padding:11px 28px;border-radius:8px;background:linear-gradient(135deg,var(--cyan),#0099bb);color:#000;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:'Noto Sans SC',sans-serif;transition:all .2s;}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,224,255,.3);}
+.btn-s{padding:11px 28px;border-radius:8px;background:transparent;color:var(--text);font-size:13px;border:1px solid var(--border2);cursor:pointer;font-family:'Noto Sans SC',sans-serif;transition:all .2s;}
+.btn-s:hover{border-color:var(--cyan);color:var(--cyan);}
+.hero-kpi{display:flex;margin-top:52px;border:1px solid var(--border);border-radius:12px;overflow:hidden;animation:fadeUp .7s .4s ease both;}
+.kpi{padding:18px 28px;text-align:center;border-right:1px solid var(--border);flex:1;}
+.kpi:last-child{border-right:none;}
+.kpi-n{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:var(--cyan);}
+.kpi-l{font-size:11px;color:var(--text2);margin-top:4px;}
+.rec-banner{background:linear-gradient(135deg,rgba(0,224,255,.07),rgba(77,255,145,.04));border:1px solid rgba(0,224,255,.18);border-radius:12px;padding:18px 24px;margin:0 40px 40px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.rb-text h3{font-size:13px;font-weight:600;color:var(--cyan);margin-bottom:3px;}
+.rb-text p{font-size:12px;color:var(--text2);line-height:1.6;}
+.rb-cta{margin-left:auto;padding:7px 18px;border-radius:6px;background:rgba(0,224,255,.1);border:1px solid rgba(0,224,255,.3);color:var(--cyan);font-size:12px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;transition:all .2s;}
+.rb-cta:hover{background:rgba(0,224,255,.18);}
+.section{padding:0 40px 56px;max-width:1200px;margin:0 auto;width:100%;}
+.sec-h{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:600;color:var(--white);margin-bottom:6px;}
+.sec-sub{font-size:12px;color:var(--text2);margin-bottom:28px;}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;}
+.feat-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px;transition:all .25s;position:relative;overflow:hidden;}
+.feat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),transparent);opacity:0;transition:opacity .25s;}
+.feat-card:hover{border-color:var(--border2);transform:translateY(-2px);}
+.feat-card:hover::before{opacity:1;}
+.fc-ico{font-size:22px;margin-bottom:12px;}
+.fc-t{font-size:13px;font-weight:600;color:var(--white);margin-bottom:5px;}
+.fc-d{font-size:11px;color:var(--text2);line-height:1.7;}
+.dir-cloud{padding:0 40px 60px;max-width:900px;margin:0 auto;width:100%;text-align:center;}
+.dc-t{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--text3);text-transform:uppercase;margin-bottom:16px;}
+.dc-wrap{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;}
+.dc-tag{padding:4px 12px;border-radius:14px;border:1px solid var(--border2);font-size:11px;color:var(--text2);cursor:pointer;transition:all .2s;}
+.dc-tag:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,224,255,.06);}
+
+/* MAP */
+.map-sidebar{width:280px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.ms-head{padding:12px;border-bottom:1px solid var(--border);}
+.ms-s{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:7px;font-size:12px;font-family:'Noto Sans SC',sans-serif;outline:none;transition:border-color .2s;}
+.ms-s:focus{border-color:var(--cyan);}
+.ms-s::placeholder{color:var(--text3);}
+.ms-flt{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;}
+.mf{padding:3px 8px;border-radius:10px;border:1px solid var(--border);background:none;color:var(--text3);font-size:10px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;transition:all .15s;}
+.mf:hover,.mf.act{color:var(--cyan);border-color:var(--cyan);background:rgba(0,224,255,.07);}
+.mf.fn.act{color:var(--nat);border-color:var(--nat);}.mf.fm.act{color:var(--min);border-color:var(--min);}
+.mf.fk.act{color:var(--key);border-color:var(--key);}.mf.fg.act{color:var(--gen);border-color:var(--gen);}
+.ms-cnt{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);margin-top:7px;}
+.ms-cnt b{color:var(--cyan);}
+.ms-list{flex:1;overflow-y:auto;padding:6px;}
+.ms-item{padding:9px 11px;border-radius:7px;cursor:pointer;margin-bottom:2px;border:1px solid transparent;transition:all .15s;}
+.ms-item:hover{background:rgba(255,255,255,.03);border-color:var(--border);}
+.ms-item.sel{background:rgba(0,224,255,.06);border-color:rgba(0,224,255,.22);}
+.ms-row{display:flex;align-items:center;gap:6px;margin-bottom:2px;}
+.ms-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.ms-nm{font-size:11px;font-weight:500;color:#cce4f8;flex:1;line-height:1.3;}
+.ms-bge{font-size:9px;padding:1px 5px;border-radius:6px;font-family:'JetBrains Mono',monospace;flex-shrink:0;}
+.ms-u{font-size:10px;color:var(--text3);padding-left:12px;}
+.map-main{flex:1;position:relative;overflow:hidden;}
+#svgmap{width:100%;height:100%;cursor:grab;}#svgmap:active{cursor:grabbing;}
+.mpv{fill:#0a1424;stroke:#11213a;stroke-width:.6;transition:fill .2s;}
+.mpv:hover{fill:#0d1c34;}
+.mnode{cursor:pointer;}
+.mring{fill:none;stroke-width:1.5;opacity:.18;animation:mpulse 2.8s ease-in-out infinite;}
+.mcore{transition:r .15s;}
+.mlabel{font-family:'Noto Sans SC',sans-serif;font-size:9.5px;fill:rgba(160,200,240,.55);pointer-events:none;text-anchor:middle;}
+@keyframes mpulse{0%,100%{opacity:.12;r:15px;}50%{opacity:.35;r:21px;}}
+.map-det{position:absolute;right:14px;top:14px;width:286px;background:rgba(7,12,22,.97);border:1px solid var(--border2);border-radius:12px;padding:18px;backdrop-filter:blur(18px);box-shadow:0 8px 32px rgba(0,0,0,.7),0 0 20px rgba(0,224,255,.06);display:none;z-index:60;max-height:calc(100% - 28px);overflow-y:auto;}
+.map-det.show{display:block;}
+.mdcl{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;transition:color .2s;}
+.mdcl:hover{color:var(--text);}
+.md-u{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--cyan);margin-bottom:3px;}
+.md-n{font-size:13px;font-weight:600;color:var(--white);line-height:1.4;margin-bottom:10px;}
+.mddiv{border:none;border-top:1px solid var(--border);margin:9px 0;}
+.md-row{display:flex;gap:6px;margin-bottom:6px;align-items:flex-start;}
+.md-lbl{font-size:10px;color:var(--text3);width:48px;flex-shrink:0;padding-top:1px;}
+.md-val{font-size:11px;color:var(--text);line-height:1.6;}
+.md-tags{display:flex;flex-wrap:wrap;gap:3px;margin-top:7px;}
+.md-tag{font-size:10px;padding:2px 6px;border-radius:6px;border:1px solid var(--border);color:var(--text3);}
+.md-btn{width:100%;margin-top:10px;padding:7px;border-radius:6px;background:rgba(0,224,255,.08);border:1px solid rgba(0,224,255,.2);color:var(--cyan);font-size:11px;cursor:pointer;transition:all .2s;font-family:'Noto Sans SC',sans-serif;}
+.md-btn:hover{background:rgba(0,224,255,.14);}
+.map-lgd{position:absolute;bottom:14px;left:14px;background:rgba(7,12,22,.92);border:1px solid var(--border);border-radius:10px;padding:11px 14px;backdrop-filter:blur(8px);z-index:50;}
+.ml-t{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:8px;}
+.ml-row{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
+.ml-dot{width:7px;height:7px;border-radius:50%;}
+.ml-lbl{font-size:10px;color:var(--text2);}
+.map-sts{position:absolute;bottom:14px;right:14px;display:flex;gap:7px;z-index:50;}
+.mst{background:rgba(7,12,22,.92);border:1px solid var(--border);border-radius:7px;padding:7px 12px;backdrop-filter:blur(8px);text-align:center;}
+.mst-n{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--cyan);line-height:1;}
+.mst-l{font-size:9px;color:var(--text3);margin-top:2px;}
+.map-tip{position:absolute;background:rgba(7,12,22,.97);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;font-size:11px;pointer-events:none;display:none;z-index:250;max-width:200px;backdrop-filter:blur(8px);}
+.map-tip.show{display:block;}
+.mt-city{color:var(--cyan);font-size:10px;font-family:'JetBrains Mono',monospace;margin-bottom:3px;}
+
+/* LABS */
+.labs-wrap{max-width:1300px;margin:0 auto;padding:24px 28px;width:100%;}
+.labs-hdr h2{font-family:'Noto Serif SC',serif;font-size:22px;font-weight:600;color:var(--white);margin-bottom:5px;}
+.labs-hdr p{font-size:12px;color:var(--text2);margin-bottom:20px;}
+.labs-ctrl{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;align-items:center;}
+.lc-s{flex:1;min-width:200px;max-width:280px;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:7px 13px;border-radius:7px;font-size:12px;font-family:'Noto Sans SC',sans-serif;outline:none;transition:border-color .2s;}
+.lc-s:focus{border-color:var(--cyan);}
+.lc-s::placeholder{color:var(--text3);}
+.lc-flts{display:flex;flex-wrap:wrap;gap:5px;}
+.lcf{padding:5px 12px;border-radius:14px;border:1px solid var(--border);background:none;color:var(--text3);font-size:11px;cursor:pointer;font-family:'Noto Sans SC',sans-serif;transition:all .15s;}
+.lcf:hover,.lcf.act{color:var(--cyan);border-color:var(--cyan);background:rgba(0,224,255,.06);}
+.lcf.ln.act{color:var(--nat);border-color:var(--nat);}.lcf.lm.act{color:var(--min);border-color:var(--min);}
+.lcf.lk.act{color:var(--key);border-color:var(--key);}.lcf.lg.act{color:var(--gen);border-color:var(--gen);}
+.lc-cnt{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);margin-left:auto;}
+.labs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;padding-bottom:40px;}
+.lab-card{background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:18px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.lab-card::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;}
+.lab-card.national::after{background:var(--nat);}.lab-card.ministry::after{background:var(--min);}
+.lab-card.key::after{background:var(--key);}.lab-card.general::after{background:var(--gen);}
+.lab-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.35);}
+.lcard-top{display:flex;align-items:flex-start;gap:9px;margin-bottom:8px;}
+.lc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.lc-info{flex:1;}
+.lc-nm{font-size:13px;font-weight:500;color:var(--white);line-height:1.4;margin-bottom:2px;}
+.lc-uv{font-size:11px;color:var(--text2);}
+.lc-lv{font-size:9px;padding:2px 7px;border-radius:6px;font-family:'JetBrains Mono',monospace;flex-shrink:0;}
+.lcard-intel{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px;padding-top:9px;border-top:1px solid var(--border);}
+.ichip{font-size:10px;padding:2px 7px;border-radius:4px;display:flex;align-items:center;gap:3px;}
+.ic-s{background:rgba(192,132,252,.09);color:var(--purple);}
+.ic-c{background:rgba(77,255,145,.08);color:var(--green);}
+.ic-h{background:rgba(255,204,68,.08);color:var(--gold);}
+.ic-d{background:rgba(0,224,255,.07);color:var(--cyan);}
+.lcard-dirs{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px;}
+.lc-dir{font-size:10px;padding:2px 7px;border-radius:5px;background:rgba(255,255,255,.04);color:var(--text2);}
+.no-res{grid-column:1/-1;text-align:center;padding:60px;color:var(--text3);}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(6px);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:60px 16px 16px;overflow-y:auto;}
+.modal-ov.show{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:26px;max-width:720px;width:100%;position:relative;box-shadow:0 24px 80px rgba(0,0,0,.8);}
+.mcl{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text2);width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.mcl:hover{border-color:var(--border2);color:var(--text);}
+.modal-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:7px;font-family:'JetBrains Mono',monospace;font-size:10px;margin-bottom:7px;}
+.modal-nm{font-family:'Noto Serif SC',serif;font-size:19px;font-weight:700;color:var(--white);line-height:1.35;margin-bottom:3px;}
+.modal-sub{font-size:12px;color:var(--text2);margin-bottom:14px;}
+.modal-div{border:none;border-top:1px solid var(--border);margin:14px 0;}
+.modal-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:18px;overflow-x:auto;}
+.tab-btn{padding:8px 16px;font-size:12px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;font-family:'Noto Sans SC',sans-serif;background:none;border-top:none;border-left:none;border-right:none;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.act{color:var(--cyan);border-bottom-color:var(--cyan);}
+.tab-pn{display:none;}.tab-pn.act{display:block;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.ibox{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:13px;}
+.ib-l{font-size:9px;color:var(--text3);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.ib-v{font-size:15px;color:var(--white);font-weight:600;}
+.ib-s{font-size:11px;color:var(--text2);margin-top:3px;line-height:1.5;}
+.mentor-list{display:flex;flex-direction:column;gap:10px;}
+.mc{background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:14px;transition:border-color .2s;}
+.mc:hover{border-color:var(--border2);}
+.m-top{display:flex;align-items:flex-start;gap:11px;margin-bottom:8px;}
+.m-av{width:40px;height:40px;border-radius:9px;background:linear-gradient(135deg,var(--border2),var(--border));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.m-info{flex:1;}
+.m-nm{font-size:14px;font-weight:600;color:var(--white);margin-bottom:2px;}
+.m-ti{font-size:11px;color:var(--cyan);}
+.m-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;}
+.mtag{font-size:10px;padding:2px 7px;border-radius:4px;}
+.mt-c{background:rgba(0,224,255,.09);color:var(--cyan);border:1px solid rgba(0,224,255,.15);}
+.mt-g{background:rgba(77,255,145,.08);color:var(--green);border:1px solid rgba(77,255,145,.15);}
+.mt-o{background:rgba(255,204,68,.08);color:var(--gold);border:1px solid rgba(255,204,68,.15);}
+.m-bio{font-size:11px;color:var(--text2);line-height:1.7;margin-top:7px;padding-top:7px;border-top:1px solid var(--border);}
+.m-spinoff{font-size:11px;color:var(--gold);margin-top:5px;}
+.res-list{display:flex;flex-direction:column;gap:9px;}
+.ri{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:13px;}
+.ri-top{display:flex;align-items:center;gap:7px;margin-bottom:5px;flex-wrap:wrap;}
+.ri-yr{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);background:var(--border);padding:2px 7px;border-radius:4px;}
+.ri-tp{font-size:10px;padding:2px 7px;border-radius:4px;}
+.ri-nm{font-size:13px;font-weight:500;color:var(--white);margin-bottom:4px;}
+.ri-d{font-size:11px;color:var(--text2);line-height:1.6;}
+.ri-aw{font-size:11px;color:var(--gold);margin-top:4px;}
+.partner-list{display:flex;flex-direction:column;gap:9px;}
+.pi{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:13px;display:flex;gap:11px;align-items:flex-start;}
+.pi-ico{font-size:20px;flex-shrink:0;}
+.pi-nm{font-size:13px;font-weight:500;color:var(--white);margin-bottom:3px;}
+.pi-tp{font-size:10px;padding:2px 7px;border-radius:4px;display:inline-block;margin-bottom:5px;}
+.pi-d{font-size:11px;color:var(--text2);line-height:1.6;}
+.stu-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px;}
+.sk{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:13px;text-align:center;}
+.sk-n{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--cyan);}
+.sk-l{font-size:11px;color:var(--text2);margin-top:3px;}
+.flow-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;}
+.flow-t{font-size:12px;color:var(--text2);margin-bottom:10px;}
+.flow-row{display:flex;align-items:center;gap:7px;margin-bottom:7px;}
+.flow-lbl{font-size:11px;color:var(--text3);width:88px;flex-shrink:0;}
+.flow-trk{flex:1;height:7px;background:var(--border);border-radius:4px;overflow:hidden;}
+.flow-fill{height:100%;border-radius:4px;}
+.flow-pct{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text2);width:30px;text-align:right;}
+.dest-box{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:13px;margin-bottom:10px;}
+.dest-t{font-size:12px;color:var(--text2);margin-bottom:8px;}
+.dest-tags{display:flex;flex-wrap:wrap;gap:5px;}
+.dest-tag{font-size:11px;padding:3px 9px;border-radius:5px;background:rgba(0,224,255,.07);border:1px solid rgba(0,224,255,.15);color:var(--cyan);}
+.tips-box{background:linear-gradient(135deg,rgba(0,224,255,.05),rgba(77,255,145,.03));border:1px solid rgba(0,224,255,.14);border-radius:8px;padding:13px;}
+.tips-t{font-size:12px;font-weight:600;color:var(--cyan);margin-bottom:8px;}
+.tip-row{font-size:11px;color:var(--text2);margin-bottom:5px;display:flex;gap:6px;line-height:1.6;}
+.tip-row::before{content:'▸';color:var(--cyan);flex-shrink:0;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo" onclick="goPg('home')">ROBO<span>LAB</span>·CN</div>
+  <div class="nav-links">
+    <button class="nbtn act" onclick="goPg('home')">首页</button>
+    <button class="nbtn" onclick="goPg('map')">地图</button>
+    <button class="nbtn" onclick="goPg('labs')">实验室库</button>
+  </div>
+  <div class="nav-right">
+    <div class="nbadge nhot">🎯 人才招聘视角</div>
+    <div class="nbadge" id="navCnt">— Labs</div>
+    <div class="nbadge">v2025.1</div>
+  </div>
+</nav>
+
+<div id="pg-home" class="pg act">
+  <div class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-tag">China · Robotics Talent Intelligence Platform</div>
+    <h1 class="hero-h1">全国高校<em>机器人实验室</em><br>人才情报平台</h1>
+    <p class="hero-sub">专为机器人AI领域高校人才招聘专家设计 · 真实收录导师背景、硕博规模、毕业去向、产研合作及招聘洞察，助您精准锁定顶尖人才来源</p>
+    <div class="hero-btns">
+      <button class="btn-p" onclick="goPg('labs')">🔍 查看实验室库</button>
+      <button class="btn-s" onclick="goPg('map')">🗺 地图浏览</button>
+    </div>
+    <div class="hero-kpi">
+      <div class="kpi"><div class="kpi-n">20</div><div class="kpi-l">个重点实验室</div></div>
+      <div class="kpi"><div class="kpi-n">18</div><div class="kpi-l">所顶尖高校</div></div>
+      <div class="kpi"><div class="kpi-n">11</div><div class="kpi-l">座城市</div></div>
+      <div class="kpi"><div class="kpi-n">50+</div><div class="kpi-l">核心导师档案</div></div>
+      <div class="kpi"><div class="kpi-n">30+</div><div class="kpi-l">孵化/上市公司</div></div>
+    </div>
+  </div>
+  <div style="padding:0 40px 32px;">
+    <div class="rec-banner">
+      <div style="font-size:26px">🎯</div>
+      <div class="rb-text">
+        <h3>招聘专家专属情报</h3>
+        <p>每个实验室包含：核心导师背景与孵化记录 · 在读硕博人数与毕业节奏 · 产研合作企业名单 · 毕业生去向分析 · 最佳接触时机与策略建议</p>
+      </div>
+      <button class="rb-cta" onclick="goPg('labs')">立即查阅 →</button>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-h">平台核心能力</div>
+    <div class="sec-sub">全链路高校机器人人才情报，支撑战略级人才获取决策</div>
+    <div class="feat-grid">
+      <div class="feat-card"><div class="fc-ico">👨‍🏫</div><div class="fc-t">导师深度画像</div><div class="fc-d">院士/长江学者/杰青档案，孵化创业记录，学术成果，代表学生去向，年均毕业人数</div></div>
+      <div class="feat-card"><div class="fc-ico">🎓</div><div class="fc-t">人才流量数据</div><div class="fc-d">在读硕士/博士人数，每年毕业规模，硕士3年/博士5年毕业节奏，各实验室实际数据</div></div>
+      <div class="feat-card"><div class="fc-ico">🏭</div><div class="fc-t">产研合作图谱</div><div class="fc-d">与哪些头部企业深度合作，联合实验室名单，孵化公司清单（含融资轮次/估值）</div></div>
+      <div class="feat-card"><div class="fc-ico">📊</div><div class="fc-t">毕业去向分析</div><div class="fc-d">毕业生流向大厂/创业/留校/海外比例分布，头部流向企业具名清单</div></div>
+      <div class="feat-card"><div class="fc-ico">💡</div><div class="fc-t">招聘接触建议</div><div class="fc-d">针对每个实验室的最佳接触时机、破冰切入点、导师关系利用策略</div></div>
+      <div class="feat-card"><div class="fc-ico">🗺</div><div class="fc-t">交互地图导航</div><div class="fc-d">按城市聚合展示，缩放平移，快速定位目标地区机器人人才密度</div></div>
+    </div>
+  </div>
+  <div class="dir-cloud">
+    <div class="dc-t">覆盖研究方向 · 点击筛选</div>
+    <div class="dc-wrap" id="dirCloud"></div>
+  </div>
+</div>
+
+<div id="pg-map" class="pg">
+  <div class="map-sidebar">
+    <div class="ms-head">
+      <input class="ms-s" id="msSearch" placeholder="搜索实验室/高校/城市...">
+      <div class="ms-flt">
+        <button class="mf act" data-f="all">全部</button>
+        <button class="mf fn" data-f="national">全国重点</button>
+        <button class="mf fm" data-f="ministry">教育部</button>
+        <button class="mf fk" data-f="key">省部级</button>
+        <button class="mf fg" data-f="general">校级</button>
+      </div>
+      <div class="ms-cnt">共 <b id="msCnt">0</b> 个实验室</div>
+    </div>
+    <div class="ms-list" id="msList"></div>
+  </div>
+  <div class="map-main" id="mapMain">
+    <svg id="svgmap" viewBox="0 0 900 680"></svg>
+    <div class="map-det" id="mapDet">
+      <button class="mdcl" id="mdCl">✕</button>
+      <div class="md-u" id="mdU"></div>
+      <div class="md-n" id="mdN"></div>
+      <hr class="mddiv">
+      <div class="md-row"><div class="md-lbl">城市</div><div class="md-val" id="mdCity"></div></div>
+      <div class="md-row"><div class="md-lbl">研究方向</div><div class="md-val" id="mdDirs"></div></div>
+      <div class="md-row"><div class="md-lbl">级别</div><div class="md-val" id="mdLv"></div></div>
+      <div class="md-row"><div class="md-lbl">在读规模</div><div class="md-val" id="mdStu"></div></div>
+      <div class="md-tags" id="mdTags"></div>
+      <button class="md-btn" onclick="openModal(window._curLab)">查看完整人才情报 →</button>
+    </div>
+    <div class="map-lgd">
+      <div class="ml-t">实验室级别</div>
+      <div class="ml-row"><div class="ml-dot" style="background:var(--nat)"></div><div class="ml-lbl">全国重点实验室</div></div>
+      <div class="ml-row"><div class="ml-dot" style="background:var(--min)"></div><div class="ml-lbl">教育部重点实验室</div></div>
+      <div class="ml-row"><div class="ml-dot" style="background:var(--key)"></div><div class="ml-lbl">省部级重点实验室</div></div>
+      <div class="ml-row"><div class="ml-dot" style="background:var(--gen)"></div><div class="ml-lbl">校级/研究所</div></div>
+    </div>
+    <div class="map-sts">
+      <div class="mst"><div class="mst-n" id="mstU">0</div><div class="mst-l">高校</div></div>
+      <div class="mst"><div class="mst-n" id="mstL">0</div><div class="mst-l">实验室</div></div>
+      <div class="mst"><div class="mst-n" id="mstN">0</div><div class="mst-l">全国重点</div></div>
+    </div>
+    <div class="map-tip" id="mapTip">
+      <div class="mt-city" id="tipCity"></div>
+      <div id="tipItems"></div>
+    </div>
+  </div>
+</div>
+
+<div id="pg-labs" class="pg">
+  <div class="labs-wrap">
+    <div class="labs-hdr">
+      <h2>实验室人才情报库</h2>
+      <p>收录核心导师背景、在读规模、产研合作及毕业去向 · 点击卡片查看完整招聘情报</p>
+    </div>
+    <div class="labs-ctrl">
+      <input class="lc-s" id="lcSearch" placeholder="搜索高校、实验室、方向、导师...">
+      <div class="lc-flts">
+        <button class="lcf act" data-lf="all">全部</button>
+        <button class="lcf ln" data-lf="national">全国重点</button>
+        <button class="lcf lm" data-lf="ministry">教育部重点</button>
+        <button class="lcf lk" data-lf="key">省部级</button>
+        <button class="lcf lg" data-lf="general">校级/研究所</button>
+      </div>
+      <div class="lc-cnt" id="lcCnt"></div>
+    </div>
+    <div class="labs-grid" id="labsGrid"></div>
+  </div>
+</div>
+
+<div class="modal-ov" id="modalOv" onclick="closeModalEv(event)">
+  <div class="modal" id="modalBox">
+    <button class="mcl" onclick="closeModal()">✕</button>
+    <div class="modal-badge" id="mBadge"></div>
+    <div class="modal-nm" id="mName"></div>
+    <div class="modal-sub" id="mSub"></div>
+    <div class="modal-div"></div>
+    <div class="modal-tabs">
+      <button class="tab-btn act" onclick="switchTab('overview')">概览</button>
+      <button class="tab-btn" onclick="switchTab('mentors')">导师团队</button>
+      <button class="tab-btn" onclick="switchTab('results')">研究成果</button>
+      <button class="tab-btn" onclick="switchTab('partners')">产研合作</button>
+      <button class="tab-btn" onclick="switchTab('students')">人才流向</button>
+    </div>
+    <div id="tab-overview" class="tab-pn act"></div>
+    <div id="tab-mentors" class="tab-pn"></div>
+    <div id="tab-results" class="tab-pn"></div>
+    <div id="tab-partners" class="tab-pn"></div>
+    <div id="tab-students" class="tab-pn"></div>
+  </div>
+</div>
+
+<script>
+const LC={national:'var(--nat)',ministry:'var(--min)',key:'var(--key)',general:'var(--gen)'};
+const LN={national:'全国重点实验室',ministry:'教育部重点实验室',key:'省部级重点实验室',general:'校级/研究所'};
+
+const LABS=[
+{id:1,univ:"哈尔滨工业大学",city:"哈尔滨",x:650,y:118,
+ name:"机器人技术与系统全国重点实验室",level:"national",dept:"机电工程学院",
+ dirs:["空间机器人","医疗机器人","极端环境机器人","微纳机器人","灵巧手"],
+ tags:["985","院士团队","国家重点","空间机器人第一"],
+ students:{ms:80,phd:120,grad:40,msYr:"3年",phdYr:"4-5年"},
+ mentors:[
+  {name:"刘宏",ico:"🏅",title:"中国工程院院士 · 哈工大副校长",
+   tags:["中国工程院院士","长江学者","中央军委无人系统首席专家"],
+   bio:"中国空间机器人技术第一人，主持研制天宫二号灵巧机械手、试验七号空间机器人，获国家技术发明二等奖4项。实验室现有专职教师70余人，外聘科研人员100余人，产业化队伍500余人。",spinoff:""},
+  {name:"赵杰",ico:"👨‍🔬",title:"教授·博导·机器人研究所所长·万人计划杰出人才",
+   tags:["万人计划杰出人才","国家重点研发专项论证组长"],
+   bio:"主持国家级科研项目30余项，总经费逾2亿元，SCI/EI论文300余篇，发明专利200余项。专注极端环境机器人（核反应堆维护、矿井、核聚变装置）及仿生机器人研究。",spinoff:""},
+  {name:"谢晖",ico:"🔬",title:"教授·博导·国家杰出青年基金获得者",
+   tags:["国家杰出青年基金","微纳机器人","磁性软体机器人"],
+   bio:"微型仿鱼磁性软体机器人群体协调与靶向药物递送方向取得国际领先进展，2024年在Science Advances发表重要成果，被国际媒体广泛报道。",spinoff:""},
+  {name:"杜志江",ico:"🏥",title:"教授·博导·国家级高层次人才",
+   tags:["国家高层次人才","医疗机器人","腔镜手术机器人"],
+   bio:"国内医疗机器人方向顶尖导师，团队长期与哈医大附院、北京协和等三甲医院合作开展腔镜手术机器人临床研究，毕业生是手术机器人赛道最受欢迎的候选人之一。",spinoff:""},
+ ],
+ results:[
+  {yr:"2024",type:"顶刊论文",tc:"var(--cyan)",name:"仿鱼磁性软体机器人群体靶向药物递送",desc:"谢晖团队在Science Advances发表，实现微纳机器人群体协调精准药物投递，国际顶级成果。",award:"Science Advances"},
+  {yr:"2023",type:"空间里程碑",tc:"var(--gold)",name:"天宫二号灵巧机械手在轨验证",desc:"刘宏院士主导，在轨实现7自由度灵巧手精准操控，标志中国空间机器人进入世界先进行列。",award:"国家技术发明二等奖"},
+  {yr:"2022",type:"特种机器人",tc:"var(--purple)",name:"核聚变装置维护机器人工程样机",desc:"赵杰团队与中核集团合作，研制核反应堆极端环境作业机器人，完成全面工程验证。",award:""},
+ ],
+ partners:[
+  {ico:"🚀",name:"中国航天科技集团",type:"战略合作",tc:"var(--cyan)",desc:"长期战略合作，空间机器人联合研发，多位博士直接进入天宫系列项目组"},
+  {ico:"⚛️",name:"中核集团",type:"项目合作",tc:"var(--purple)",desc:"核环境特种机器人联合研发，国内核安全机器人最重要合作单位"},
+  {ico:"🤖",name:"新松机器人（688248.SH）",type:"产学研",tc:"var(--green)",desc:"创始人曲道奎为哈工大校友，长期产研合作，科创板机器人第一股"},
+  {ico:"💊",name:"三甲医院联合体",type:"临床合作",tc:"var(--gold)",desc:"杜志江团队与多家三甲医院合作腔镜手术机器人临床验证"},
+ ],
+ gradFlow:[{lbl:"国防/航天研究院",pct:35,c:"#00e0ff"},{lbl:"机器人头部企业",pct:30,c:"#4dff91"},{lbl:"留校/博深造",pct:20,c:"#ffcc44"},{lbl:"海外深造",pct:15,c:"#c084fc"}],
+ topDest:["中国航天","新松机器人","华为","中科院沈阳自动化所","哈工大系创业"],
+ tips:["刘宏院士团队是空间机器人最顶级出口，建议通过学院战略合作切入","谢晖/杜志江博士医疗机器人方向极热，需提前6个月接触","每年6月和12月毕业，3-4月为最佳预招窗口","赵杰团队工业机器人博士每年仅5-8人毕业，极度稀缺"]},
+
+{id:2,univ:"浙江大学",city:"杭州",x:608,y:308,
+ name:"机器人研究院（足式/人形/具身智能）",level:"national",dept:"控制科学与工程学院",
+ dirs:["足式机器人","人形机器人","软体机器人","具身智能","无人机"],
+ tags:["985","熊蓉","人形机器人孵化地","宇树/云深处/迦智"],
+ students:{ms:100,phd:80,grad:45,msYr:"3年",phdYr:"4-5年"},
+ mentors:[
+  {name:"熊蓉",ico:"⭐",title:"求是特聘教授 · 浙江人形机器人创新中心首席科学家",
+   tags:["RoboCup世界6冠","迦智科技创始人","'领航者'人形机器人主导"],
+   bio:"从事机器人研究25年，率队6次夺RoboCup世界冠军。2023年创立浙江人形机器人创新中心，2024年3月发布领航者1号（1.5m/50kg），8月升级领航者2号（1.65m/275TOPS）。其学生孵化创立云深处、迦智科技等25家公司，是国内人形机器人最活跃孵化生态核心。",spinoff:"迦智科技（字节/联想创投，服务1000+客户）"},
+  {name:"朱秋国",ico:"🤖",title:"副教授·博导·云深处科技创始人CEO",
+   tags:["浙大控制博士","B+轮融资·估值10亿+","四足→人形赛道"],
+   bio:"师从熊蓉，研制'绝影''赤兔'四足机器人，2017年创立云深处科技，2024年8月世界机器人大会发布首款人形机器人Dr.01。公司近一半员工为浙大校友，已完成B+轮融资。",spinoff:"创立云深处科技（B+轮完成，估值逾10亿元）"},
+ ],
+ results:[
+  {yr:"2025",type:"速度纪录",tc:"var(--gold)",name:"黑豹2.0——全球最快四足机器人10m/s",desc:"浙大杭州国际科创中心联合发布，速度10m/s，刷新全球四足机器人速度纪录。",award:"全球最快四足"},
+  {yr:"2024",type:"产品发布",tc:"var(--cyan)",name:"领航者2号 NAVIAI 人形机器人",desc:"熊蓉团队主导，1.65m/275TOPS，末端控制精度0.1mm，单臂负载5kg，工业场景作业能力，获1.1亿元战略投资。",award:""},
+  {yr:"2024",type:"量产突破",tc:"var(--green)",name:"宇树G1人形机器人9.9万量产",desc:"浙大系王兴兴创立宇树科技，G1人形机器人9.9万，已部署蔚来汽车工厂，B3轮融资后估值超80亿元。",award:""},
+ ],
+ partners:[
+  {ico:"🦾",name:"宇树科技（Unitree）",type:"深度关联",tc:"var(--cyan)",desc:"创始人王兴兴，G1人形机器人已量产，B3轮后估值超80亿元，与浙大理工建立联合实验室"},
+  {ico:"🐾",name:"云深处科技",type:"直接孵化",tc:"var(--green)",desc:"创始人朱秋国为浙大副教授，2024年发布人形机器人Dr.01，B+轮完成"},
+  {ico:"🚀",name:"迦智科技",type:"直接孵化",tc:"var(--gold)",desc:"熊蓉教授率学生创立，服务客户超1000家，字节/联想创投"},
+  {ico:"🏛",name:"宁波市政府",type:"政府共建",tc:"var(--purple)",desc:"共建浙江人形机器人创新中心，1.1亿元战略投资，推动产业化"},
+ ],
+ gradFlow:[{lbl:"机器人独角兽",pct:50,c:"#00e0ff"},{lbl:"大厂AI部门",pct:25,c:"#4dff91"},{lbl:"自主创业",pct:15,c:"#ffcc44"},{lbl:"留校/出国",pct:10,c:"#c084fc"}],
+ topDest:["宇树科技","云深处科技","迦智科技","华为2012","字节跳动AI Lab"],
+ tips:["浙大系最活跃机器人创业圈，'藕舫天使'已记录25家浙大系机器人公司","熊蓉和朱秋国学生极受资本追捧，需提前6个月建立关系","每年3-4月最佳接触窗口","与浙江人形机器人创新中心（宁波）建立合作是最高效渠道"]},
+
+{id:3,univ:"北京航空航天大学",city:"北京",x:548,y:196,
+ name:"机器人研究所（医疗/服务/特种）",level:"national",dept:"自动化科学与电气工程学院",
+ dirs:["医疗手术机器人","服务机器人","仿生机器人","无人系统"],
+ tags:["985","王田苗","3家上市公司","60+孵化项目","南湘北苗"],
+ students:{ms:60,phd:90,grad:35,msYr:"3年",phdYr:"4-5年"},
+ mentors:[
+  {name:"王田苗",ico:"🌟",title:"教授·博导·机器人研究所名誉所长·长江学者",
+   tags:["国家杰青","IEEE机器人北京大区主席","中关村智友研究院院长","'南湘北苗'之北苗"],
+   bio:"30年医疗/移动机器人研究，2020年单年三家孵化公司上市：天智航（科创板，骨科手术机器人第一股）、埃夫特（科创板）、九号公司（VIE+CDR第一股）。参与孵化投资超60项目，涵盖九号、天智航、艾利特、柏惠维康、云洲智能、深之蓝等。已培养130余名硕博。",
+   spinoff:"天智航（科创板688277）· 九号公司（NYSE）· 埃夫特（科创板）· 艾利特机器人 · 柏惠维康 · 云洲智能 · 深之蓝"},
+ ],
+ results:[
+  {yr:"2020",type:"三家同年上市",tc:"var(--gold)",name:"单年三IPO：天智航/埃夫特/九号公司",desc:"王田苗教授孵化三家公司同年上市，天智航为国内骨科手术机器人第一股，九号公司为'VIE+CDR第一股'，创业界记录。",award:"科创板·NYSE上市"},
+  {yr:"2021",type:"融资里程碑",tc:"var(--cyan)",name:"艾利特机器人5个月两轮融资3亿元",desc:"全部核心创始人为王田苗嫡传弟子，5个月内两轮共3亿元，成为协作机器人国内前三，与UR同台竞争。",award:""},
+  {yr:"2024",type:"孵化生态",tc:"var(--green)",name:"中关村智友科学家基金17+项投资",desc:"王田苗联合科学家发起，吸引红杉/真格/百度风投，累计投资17家专精特新硬科技企业。",award:""},
+ ],
+ partners:[
+  {ico:"🏥",name:"北京积水潭医院",type:"长期临床合作",tc:"var(--cyan)",desc:"骨科手术机器人临床验证基地，全球首款骨折复位机器人诞生地"},
+  {ico:"🌊",name:"云洲智能",type:"孵化关联",tc:"var(--green)",desc:"王田苗系孵化，无人水面艇国内第一，与多国海军合作"},
+  {ico:"💡",name:"中关村智友科学家基金",type:"孵化平台",tc:"var(--gold)",desc:"王田苗联合15位科学家发起，孵化超60项目，北航学生创业核心平台"},
+  {ico:"🛡",name:"国防科工单位",type:"国防合作",tc:"var(--purple)",desc:"特种机器人承接国防课题，南极科考机器人验证，部分保密"},
+ ],
+ gradFlow:[{lbl:"医疗/手术机器人",pct:35,c:"#00e0ff"},{lbl:"自主创业",pct:30,c:"#4dff91"},{lbl:"服务/工业机器人",pct:25,c:"#ffcc44"},{lbl:"留校/出国",pct:10,c:"#c084fc"}],
+ topDest:["天智航","艾利特机器人","柏惠维康·睿米","九号公司","深之蓝"],
+ tips:["王田苗是中国最活跃机器人创业孵化教授，学生创业意愿极强，需提供有吸引力的股权激励","医疗机器人博士是最稀缺资源，建议通过天智航/柏惠维康引荐","与中关村智友研究院合作是接触该生态人才的最佳渠道","南极科考/特种方向学生有保密协议，接触需谨慎"]},
+
+{id:4,univ:"上海交通大学",city:"上海",x:608,y:302,
+ name:"机器人研究所（工业/医疗/仿生）",level:"national",dept:"机械与动力工程学院",
+ dirs:["工业机器人","仿生多足机器人","医疗机器人","协作机器人","具身智能"],
+ tags:["985","高峰院士","卢策吾","杨广中院士","Science Advances"],
+ students:{ms:80,phd:110,grad:45,msYr:"3年",phdYr:"4-5年"},
+ mentors:[
+  {name:"高峰",ico:"🦾",title:"中国工程院院士·教授·博导",
+   tags:["中国工程院院士","并联机器人权威","仿生多足机器人"],
+   bio:"国际并联机器人领域权威，2024世界机器人大会携六足和两足仿生机器人亮相，长期深耕多足机器人设计与应用。研究成果在国内外产生重要影响，是上交机器人学科带头人。",spinoff:""},
+  {name:"卢策吾",ico:"🎯",title:"教授·博导",
+   tags:["具身智能","机器人视觉","NeurIPS/CVPR高频发表"],
+   bio:"上交AI/机器人交叉最受追捧导师，学生在具身智能和视觉机器人领域出路极好，是银河通用、智元等具身智能独角兽的重要人才来源。近年具身智能方向发表多篇国际顶会论文。",spinoff:""},
+  {name:"杨广中",ico:"🏥",title:"英国皇家工程院院士·医疗机器人研究院院长",
+   tags:["英国皇家工程院院士","微创手术机器人","国际顶刊主编"],
+   bio:"医疗机器人全球知名学者，主导建立上交医疗机器人研究院，培养大批进入直觉外科/术锐等方向的顶尖学生，在自然子刊发表多篇重要成果。",spinoff:""},
+ ],
+ results:[
+  {yr:"2024",type:"重大展示",tc:"var(--cyan)",name:"六足&两足仿生机器人系列亮相世界大会",desc:"高峰院士团队在2024世界机器人大会展示最新六足和两足仿生机器人，标志上交在多足机器人方向的技术突破。",award:""},
+  {yr:"2024",type:"顶刊论文",tc:"var(--purple)",name:"亚毫米级纤维机器人（Science Advances）",desc:"陈卫东/高安柱团队发表，实现亚毫米纤维机器人解耦宏微运动，适用于腔内精准操控。",award:"Science Advances"},
+  {yr:"2021",type:"平台成立",tc:"var(--green)",name:"元知机器人研究院成立",desc:"元知科技集团捐赠支持，推动机器人理论与产业交叉创新，成为与产业合作的核心渠道。",award:""},
+ ],
+ partners:[
+  {ico:"⚙️",name:"ABB机器人",type:"长期合作",tc:"var(--cyan)",desc:"全球工业机器人巨头，与上交机器人所长期联合研究，持续招募毕业生"},
+  {ico:"🏥",name:"术锐机器人",type:"医疗合作",tc:"var(--green)",desc:"国产腔镜手术机器人，创始人为上交校友，与医疗机器人研究院紧密合作"},
+  {ico:"🤖",name:"元知科技集团",type:"捐赠合作",tc:"var(--gold)",desc:"捐赠成立元知机器人研究院，提供产业资源与研发经费"},
+  {ico:"🔧",name:"发那科（FANUC）",type:"技术合作",tc:"var(--purple)",desc:"日系工业机器人领军，上交是其重要人才来源"},
+ ],
+ gradFlow:[{lbl:"制造业/工业机器人",pct:40,c:"#00e0ff"},{lbl:"大厂AI算法",pct:30,c:"#4dff91"},{lbl:"医疗机器人",pct:20,c:"#ffcc44"},{lbl:"出国/留校",pct:10,c:"#c084fc"}],
+ topDest:["ABB","发那科","华为","商汤","术锐机器人","银河通用"],
+ tips:["卢策吾学生是具身智能/视觉方向最热门候选，需早接触","高峰团队并联和多足方向顶尖，毕业生工程能力强","杨广中院士主导的医疗机器人研究院，医疗方向博士极受器械公司青睐","元知机器人研究院是产业合作新渠道，可通过此切入"]},
+
+{id:5,univ:"华中科技大学",city:"武汉",x:553,y:348,
+ name:"智能制造装备与技术全国重点实验室",level:"national",dept:"机械科学与工程学院",
+ dirs:["工业机器人","人形机器人","机器人化制造","高精度加工"],
+ tags:["985","丁汉院士","陈学东院士","'大壮'人形","深造率86%","A+学科"],
+ students:{ms:90,phd:100,grad:42,msYr:"3年",phdYr:"4-5年"},
+ mentors:[
+  {name:"丁汉",ico:"✈️",title:"中国科学院院士·教授·博导·启明实验班领衔",
+   tags:["中科院院士","国家自然科学二等奖","机器人化制造","A+学科领衔"],
+   bio:"院士，突破大型航空构件机器人柔顺加工技术，成果应用于中航发/中航工业/中国中车。研制'神农''荆楚'人形机器人样机。2025年新设'启明实验班'由丁汉院士一对一指导，机器人工程2024届毕业生深造率86%。",spinoff:""},
+  {name:"陈学东",ico:"🤖",title:"中国工程院院士·教授·博导",
+   tags:["中国工程院院士","国家技术发明二等奖2项","'大壮'人形机器人"],
+   bio:"院士，团队博士生38人、硕士生40人。与武汉格蓝若联合研发面向变电站巡检的人形机器人'大壮'（1.8m/95kg/举80斤），每周二亲赴企业与学生/工程师联合攻关，4个月完成本体研制。",
+   spinoff:"与武汉格蓝若联合孵化'大壮'人形机器人（面向电力巡检）"},
+ ],
+ results:[
+  {yr:"2024",type:"人形机器人",tc:"var(--cyan)",name:"'大壮'人形机器人——4个月完成本体研制",desc:"陈学东院士与武汉格蓝若联合，1.8m/95kg，变电站巡检，4个月完成本体研制提前1个月达标。",award:""},
+  {yr:"2024",type:"人形机器人",tc:"var(--purple)",name:"'神农''荆楚'人形机器人样机",desc:"丁汉院士团队，具备高精度抓取能力，入选2024年度武汉科技亮点。",award:""},
+  {yr:"2025",type:"人才培养",tc:"var(--green)",name:"启明实验班·机器人工程深造率86%",desc:"2025年招80名机器人工程生，设'启明实验班'，丁汉/陈学东院士一对一指导，2024届深造率86%。",award:"教育部学科评估A+"},
+ ],
+ partners:[
+  {ico:"⚡",name:"武汉格蓝若·国家电网",type:"深度共建",tc:"var(--cyan)",desc:"陈学东院士'大壮'人形机器人产学研共同体，校企人员混合攻关"},
+  {ico:"✈️",name:"中航发/中航工业",type:"航空合作",tc:"var(--green)",desc:"丁汉团队航空构件机器人加工，输出核心人才，重大经济效益"},
+  {ico:"🚗",name:"东风汽车",type:"联合实验室",tc:"var(--gold)",desc:"汽车智能制造联合实验室，制造方向毕业生重要去向"},
+  {ico:"🔩",name:"中国中车",type:"项目合作",tc:"var(--purple)",desc:"轨道交通构件机器人加工联合研发，产业化落地"},
+ ],
+ gradFlow:[{lbl:"深造/留校",pct:45,c:"#00e0ff"},{lbl:"智能制造/工业机器人",pct:35,c:"#4dff91"},{lbl:"机器人创业",pct:12,c:"#ffcc44"},{lbl:"出国",pct:8,c:"#c084fc"}],
+ topDest:["华为","中航工业","东风汽车","武汉格蓝若","华科系创业"],
+ tips:["陈学东院士人形机器人新方向（电站巡检）值得重点关注，团队博38/硕40规模大","丁汉院士团队航空制造机器人顶尖，但深造率高达86%，需竞争激烈的offer","2025年招生规模扩大，2027-2028年人才输出大幅增加","建议通过'龙头企业对接计划'正式渠道切入"]},
+
+{id:6,univ:"北京大学",city:"北京",x:548,y:196,
+ name:"EPIC具身智能实验室",level:"ministry",dept:"前沿计算研究中心",
+ dirs:["具身智能","3D视觉","VLA大模型","灵巧操作","大模型机器人"],
+ tags:["985","王鹤","银河通用联合实验室","NeurIPS/CVPR","极稀缺"],
+ students:{ms:30,phd:40,grad:18,msYr:"3年",phdYr:"4-5年"},
+ mentors:[
+  {name:"王鹤",ico:"🌍",title:"助理教授·EPIC Lab创始人·联合实验室主任",
+   tags:["NeurIPS/CVPR/RSS顶会高产","具身智能","3D视觉","北大-银河通用联合实验室主任"],
+   bio:"海外顶校博士回国，专注具身智能与3D视觉，NeurIPS/CVPR/RSS顶会多篇高影响力论文，是国内具身智能方向学术影响力最高的年轻学者之一。2024年担任北大-银河通用具身智能联合实验室主任。",spinoff:"北大-银河通用机器人具身智能联合实验室"},
+ ],
+ results:[
+  {yr:"2024",type:"顶会论文",tc:"var(--cyan)",name:"VLA系列具身智能·NeurIPS/CVPR连续发表",desc:"王鹤团队在NeurIPS/CVPR等顶会发表多篇具身智能论文，推动大语言模型与机器人操作融合。",award:"NeurIPS · CVPR · RSS"},
+  {yr:"2024",type:"联合实验室",tc:"var(--green)",name:"北大-银河通用具身智能联合实验室",desc:"王鹤担任主任，北大研究与银河通用产品直接对接，是国内顶尖具身智能产学研案例。",award:""},
+ ],
+ partners:[
+  {ico:"🤖",name:"银河通用机器人",type:"联合实验室",tc:"var(--cyan)",desc:"王鹤任联合实验室主任，北大具身智能研究与产品直接对接"},
+  {ico:"☁️",name:"阿里云通义",type:"大模型合作",tc:"var(--green)",desc:"大模型赋能机器人，VLA联合研究"},
+ ],
+ gradFlow:[{lbl:"大厂具身智能部门",pct:50,c:"#00e0ff"},{lbl:"海外顶校博士",pct:25,c:"#4dff91"},{lbl:"具身智能创业",pct:20,c:"#ffcc44"},{lbl:"留校",pct:5,c:"#c084fc"}],
+ topDest:["字节跳动","阿里通义","银河通用","CMU/MIT留学"],
+ tips:["王鹤是国内具身智能最顶尖导师之一，学生普遍有海外Offer，竞争极为激烈","每年毕业仅15-20人，都是极稀缺资源，需用研究挑战而非纯薪酬吸引","建议通过与王鹤建立学术合作，通过联合项目接触学生","提前12个月布局，优先联系实验室博三以上学生"]},
+
+{id:7,univ:"清华大学",city:"北京",x:548,y:196,
+ name:"智能机器人实验室 & 类脑计算中心",level:"national",dept:"自动化系/精仪系",
+ dirs:["足式仿生机器人","类脑芯片","具身智能","人机交互","无人系统"],
+ tags:["985","孙富春","赵明国","张钹院士","天机类脑芯片"],
+ students:{ms:70,phd:100,grad:38,msYr:"3年",phdYr:"4-5年"},
+ mentors:[
+  {name:"孙富春",ico:"🤖",title:"教授·博导·自动化系主任·长江学者",
+   tags:["教育部长江学者","机器人学习","抓取操作","人机协作"],
+   bio:"清华机器人学习和抓取领域核心导师，研究方向与具身智能高度契合，门下学生是机器人感知与操作最强背景之一。担任自动化系主任，积极推动产学研合作，毕业生在华为、大厂AI岗位深受欢迎。",spinoff:""},
+  {name:"赵明国",ico:"🦿",title:"研究员·机器人控制实验室主任",
+   tags:["足式仿生机器人","类脑机器人","无人驾驶自行车"],
+   bio:"专注足式仿生机器人和无人驾驶研究，基于清华'天机'芯片开展类脑机器人研究，学生在足式机器人创业公司极受欢迎，是银河通用、智元机器人的重要人才来源。",spinoff:""},
+ ],
+ results:[
+  {yr:"2023",type:"类脑突破",tc:"var(--cyan)",name:"天机类脑芯片驱动仿生机器人",desc:"基于Nature封面天机芯片，实现类脑计算驱动仿生机器人控制，探索具身AI新范式。",award:""},
+  {yr:"2023",type:"成果转化",tc:"var(--green)",name:"通用抓取操作系统产品化",desc:"孙富春团队与多家机器人企业合作，完成通用抓取操作系统产品化转化。",award:""},
+ ],
+ partners:[
+  {ico:"💻",name:"华为2012实验室",type:"人才合作",tc:"var(--cyan)",desc:"清华是华为最重要顶尖人才来源，2012实验室长期与自动化系合作"},
+  {ico:"🤖",name:"银河通用机器人",type:"技术合作",tc:"var(--green)",desc:"清华系具身智能初创，与清华机器人实验室密切技术合作"},
+  {ico:"⚡",name:"英伟达中国",type:"计算合作",tc:"var(--gold)",desc:"GPU计算合作，支持清华机器人仿真训练平台建设"},
+ ],
+ gradFlow:[{lbl:"大厂AI/算法岗",pct:45,c:"#00e0ff"},{lbl:"具身智能创业",pct:25,c:"#4dff91"},{lbl:"学术留校",pct:20,c:"#ffcc44"},{lbl:"海外顶校",pct:10,c:"#c084fc"}],
+ topDest:["华为2012实验室","字节跳动AI Lab","旷视","银河通用","智元机器人"],
+ tips:["清华自动化系是国内算法人才密度最高，应届生offer竞争激烈","具身智能方向学生多有海外Offer，需竞争力薪酬+技术挑战","建议通过清华AIA（自动化系AI实验室）作为接触入口","孙富春团队规模较大，建议针对机器人抓取+具身方向定向邀约"]},
+
+{id:8,univ:"国防科技大学",city:"长沙",x:538,y:368,
+ name:"机器人与智能系统重点实验室",level:"national",dept:"智能科学学院",
+ dirs:["仿人机器人","高动态运动控制","无人集群","自主决策"],
+ tags:["985","黄强长江学者","2000年中国首台类人机器人","定向分配"],
+ students:{ms:50,phd:80,grad:30,msYr:"3年",phdYr:"4-5年"},
+ mentors:[
+  {name:"黄强",ico:"🛡",title:"教授·教育部长江学者·国家杰青·万人计划",
+   tags:["教育部长江学者","国家杰出青年基金","万人计划科技创新领军","仿人机器人权威"],
+   bio:"日本早稻田大学博士，师从著名学者加藤一郎。先后研制五代'汇童'仿人机器人，国际首次实现仿人机器人模仿太极拳、刀术、乒乓球对打等复杂动作。2000年研制中国第一台类人型机器人，IEEE Transactions on Robotics高引论文作者。",spinoff:""},
+ ],
+ results:[
+  {yr:"2000",type:"历史里程碑",tc:"var(--gold)",name:"中国第一台类人型机器人",desc:"研制成功中国第一台类人型机器人，1.4m/20kg，具备语言功能和行走能力，是中国仿人机器人研究的开端。",award:"中国机器人里程碑"},
+  {yr:"2023",type:"重大成果",tc:"var(--cyan)",name:"高动态双足机器人运动控制突破",desc:"黄强团队高动态仿人机器人运动控制取得重要突破，达到国内领先水平。",award:""},
+ ],
+ partners:[
+  {ico:"🛡",name:"国防科工相关单位",type:"战略合作",tc:"var(--cyan)",desc:"长期服务国家战略，特种机器人产品支撑多个国家重大任务"},
+  {ico:"⚡",name:"国家电网",type:"项目合作",tc:"var(--green)",desc:"电力巡检机器人联合研发"},
+ ],
+ gradFlow:[{lbl:"军工/国防研究所",pct:60,c:"#00e0ff"},{lbl:"国防系统研究院",pct:25,c:"#4dff91"},{lbl:"工业机器人企业",pct:10,c:"#ffcc44"},{lbl:"其他",pct:5,c:"#c084fc"}],
+ topDest:["中国电科","航天科工","各地国防研究所"],
+ tips:["毕业生有定向分配机制，商业公司可获取比例低，需提前评估可行性","高动态运动控制方向研究国内顶级，可通过技术合作切入","部分学生有军人身份，商业合同需特殊程序","仿人机器人技术积累自2000年，基础深厚，可作学术交流破冰点"]},
+
+{id:9,univ:"哈尔滨工程大学",city:"哈尔滨",x:650,y:118,
+ name:"水下机器人技术重点实验室",level:"national",dept:"水声工程学院",
+ dirs:["水下机器人","AUV自主导航","海洋探测","水下作业"],
+ tags:["211","AUV","海洋","深之蓝关联","极稀缺方向"],
+ students:{ms:60,phd:70,grad:28,msYr:"3年",phdYr:"4-5年"},
+ mentors:[
+  {name:"水下机器人核心导师团队",ico:"🌊",title:"实验室核心导师团队",
+   tags:["AUV自主导航","水声通信","水下作业机器人"],
+   bio:"依托哈工程水声工程和海洋工程优势，建立国内最权威水下机器人技术研究平台。在AUV自主导航、水下作业机器人、海洋探测方向达到国内顶尖水平，承担多项海洋科考和国防重大项目。",spinoff:""},
+ ],
+ results:[
+  {yr:"2023",type:"重大成果",tc:"var(--cyan)",name:"新型AUV长时自主导航系统",desc:"在复杂海洋环境实现长时间自主导航，达到国内领先水平，支撑多项海洋科考任务。",award:""},
+ ],
+ partners:[
+  {ico:"🌊",name:"深之蓝（水下机器人）",type:"产学研",tc:"var(--cyan)",desc:"王田苗孵化，水下机器人消费级工业级市场领先，与哈工程保持人才技术合作"},
+  {ico:"⚓",name:"中船重工",type:"战略合作",tc:"var(--green)",desc:"大型水下装备和海洋探测系统联合研发，毕业生重要去向"},
+  {ico:"🏛",name:"国家海洋局",type:"项目合作",tc:"var(--gold)",desc:"承担国家海洋探测重大项目，核心资金来源"},
+ ],
+ gradFlow:[{lbl:"海洋/水下装备企业",pct:40,c:"#00e0ff"},{lbl:"军工海洋研究所",pct:35,c:"#4dff91"},{lbl:"大型船舶企业",pct:20,c:"#ffcc44"},{lbl:"其他",pct:5,c:"#c084fc"}],
+ topDest:["深之蓝","中船重工","中科院沈阳自动化所","中船集团"],
+ tips:["水下机器人方向人才极稀缺，国内最难招细分赛道之一","与深之蓝合作是接触该实验室学生的重要渠道","海洋工程背景在无人船/水下无人系统企业中溢价极高","部分学生涉密，需提前了解安全审查流程"]},
+
+{id:10,univ:"西北工业大学",city:"西安",x:488,y:268,
+ name:"空天地无人系统与智能技术重点实验室",level:"national",dept:"自动化学院",
+ dirs:["无人飞行器","空天机器人","集群协同","智能控制"],
+ tags:["985","低空经济热门","无人机","航空航天","集群协同"],
+ students:{ms:70,phd:90,grad:32,msYr:"3年",phdYr:"4-5年"},
+ mentors:[
+  {name:"西工大无人系统核心团队",ico:"✈️",title:"实验室核心导师团队",
+   tags:["无人飞行器","空间机器人","集群协同","航空航天背景"],
+   bio:"依托西工大航空航天航海三航特色，在无人飞行器和集群协同方向具有独特优势，研究成果服务国家战略需求。随低空经济政策推进，相关人才需求快速增长。",spinoff:""},
+ ],
+ results:[
+  {yr:"2023",type:"重大成果",tc:"var(--cyan)",name:"大规模无人机集群自主协同系统",desc:"突破大规模无人集群自主控制技术，达到国内领先水平，服务国防与低空经济双重需求。",award:""},
+ ],
+ partners:[
+  {ico:"🚀",name:"中国航天科技集团",type:"国防合作",tc:"var(--cyan)",desc:"无人系统国防应用长期合作伙伴"},
+  {ico:"🚁",name:"大疆创新",type:"产学研",tc:"var(--green)",desc:"无人机技术合作，是西工大学生重要就业方向"},
+  {ico:"✈️",name:"中航工业",type:"战略合作",tc:"var(--gold)",desc:"航空型无人系统联合研发，输出核心人才"},
+ ],
+ gradFlow:[{lbl:"航天/国防",pct:50,c:"#00e0ff"},{lbl:"无人机企业",pct:30,c:"#4dff91"},{lbl:"科技大厂",pct:15,c:"#ffcc44"},{lbl:"其他",pct:5,c:"#c084fc"}],
+ topDest:["中国航天","中航工业","大疆创新","亿航智能"],
+ tips:["低空经济政策推进，无人飞行器方向人才需求快速增长","与航天系统院所长期合作，毕业生去向相对集中","通过无人机产业峰会接触西工大学生效率高","注意学生安全背景审查要求"]},
+
+{id:11,univ:"南开大学",city:"天津",x:558,y:208,
+ name:"机器人与信息自动化研究所",level:"key",dept:"人工智能学院",
+ dirs:["视觉机器人","灵巧操作","强化学习","人机协作"],
+ tags:["985","视觉","强化学习","具身智能"],
+ students:{ms:40,phd:50,grad:20,msYr:"3年",phdYr:"4-5年"},
+ mentors:[
+  {name:"南开机器人核心团队",ico:"🎯",title:"人工智能学院核心导师团队",
+   tags:["视觉机器人","强化学习","灵巧操作"],
+   bio:"南开AI学院成立以来积极布局具身智能方向，视觉+强化学习组合背景是当前具身智能最抢手的能力组合之一，毕业生在百度/华为/旷视受欢迎。",spinoff:""},
+ ],
+ results:[
+  {yr:"2023",type:"重大成果",tc:"var(--cyan)",name:"基于强化学习的灵巧操作系统",desc:"团队在基于强化学习的机器人灵巧操作领域取得突破，成果在国际顶会发表。",award:""},
+ ],
+ partners:[
+  {ico:"💻",name:"百度",type:"产学研",tc:"var(--cyan)",desc:"AI机器人方向长期合作，是毕业生重要去向"},
+  {ico:"📷",name:"旷视科技",type:"合作",tc:"var(--green)",desc:"视觉算法合作，多名毕业生就职"},
+ ],
+ gradFlow:[{lbl:"大厂AI",pct:50,c:"#00e0ff"},{lbl:"机器人企业",pct:30,c:"#4dff91"},{lbl:"出国/留校",pct:20,c:"#ffcc44"}],
+ topDest:["百度","华为","旷视","商汤"],
+ tips:["视觉+强化学习组合背景是具身智能最抢手能力组合","南开AI学院成立较晚但方向精准，值得关注","每年3-4月最佳接触窗口"]},
+
+{id:12,univ:"天津大学",city:"天津",x:558,y:208,
+ name:"机器人与自动化研究所",level:"key",dept:"机械工程学院",
+ dirs:["并联机器人","医疗机器人","微操作","外骨骼"],
+ tags:["985","并联机构","微操作","医疗","康复"],
+ students:{ms:45,phd:55,grad:22,msYr:"3年",phdYr:"4-5年"},
+ mentors:[
+  {name:"天津大学机器人团队",ico:"🔩",title:"机械工程学院核心导师团队",
+   tags:["并联机器人","医疗机器人","微操作"],
+   bio:"并联机器人和微操作方向是天大传统优势，在医疗器械赛道有独特竞争力，与迈瑞、强生医疗等长期合作，毕业生在医疗器械公司受欢迎。",spinoff:""},
+ ],
+ results:[
+  {yr:"2023",type:"产业成果",tc:"var(--cyan)",name:"微创手术机器人微操作系统",desc:"在微创手术微操作领域取得突破，与多家医疗器械公司合作推进产业化。",award:""},
+ ],
+ partners:[
+  {ico:"💊",name:"迈瑞医疗",type:"产学研",tc:"var(--cyan)",desc:"医疗机器人方向长期合作伙伴"},
+  {ico:"🏥",name:"强生医疗",type:"合作",tc:"var(--green)",desc:"微创手术器械联合研发"},
+ ],
+ gradFlow:[{lbl:"医疗器械企业",pct:40,c:"#00e0ff"},{lbl:"工业机器人",pct:35,c:"#4dff91"},{lbl:"其他",pct:25,c:"#ffcc44"}],
+ topDest:["迈瑞医疗","强生医疗","西门子医疗"],
+ tips:["并联机器人和微操作在医疗器械赛道独特竞争力","与迈瑞/强生有深厚合作，通过他们引荐效率高","每年毕业规模适中，接触成功率较高"]},
+
+{id:13,univ:"东南大学",city:"南京",x:592,y:286,
+ name:"机器人传感与控制技术研究所",level:"key",dept:"仪器科学与工程学院",
+ dirs:["传感融合","力控机器人","康复机器人","外骨骼"],
+ tags:["985","力传感器","康复","外骨骼","埃斯顿关联"],
+ students:{ms:45,phd:50,grad:22,msYr:"3年",phdYr:"4-5年"},
+ mentors:[
+  {name:"东南大学机器人团队",ico:"📡",title:"仪器科学与工程学院核心导师团队",
+   tags:["力传感器","触觉感知","康复机器人"],
+   bio:"力传感器和触觉感知方向是具身智能硬件层最紧缺方向，东南大学在此有独特积累。埃斯顿机器人（南京）与东南大学有深厚合作关系。",spinoff:""},
+ ],
+ results:[
+  {yr:"2023",type:"产业合作",tc:"var(--cyan)",name:"六维力传感器产业化",desc:"与汇川技术合作完成六维力传感器产业化，是国内力控机器人核心部件。",award:""},
+ ],
+ partners:[
+  {ico:"🔧",name:"埃斯顿机器人",type:"深度合作",tc:"var(--cyan)",desc:"南京工业机器人龙头，与东南大学有深厚合作关系"},
+  {ico:"⚙️",name:"汇川技术",type:"产学研",tc:"var(--green)",desc:"力传感器和运动控制方向合作"},
+ ],
+ gradFlow:[{lbl:"仪器/传感企业",pct:40,c:"#00e0ff"},{lbl:"机器人企业",pct:35,c:"#4dff91"},{lbl:"其他",pct:25,c:"#ffcc44"}],
+ topDest:["汇川技术","埃斯顿机器人","科大讯飞"],
+ tips:["力传感和触觉感知方向是具身智能硬件层最缺口方向","埃斯顿关联深厚，可通过其引荐","每年毕业规模约20人，接触需提前"]},
+
+{id:14,univ:"中国科学技术大学",city:"合肥",x:578,y:298,
+ name:"认知智能国家重点实验室（机器人方向）",level:"national",dept:"信息科学技术学院",
+ dirs:["认知机器人","自然语言交互","具身AGI","人机对话"],
+ tags:["985","认知智能","NLP+机器人","科大讯飞关联","AGI"],
+ students:{ms:50,phd:70,grad:26,msYr:"3年",phdYr:"4-5年"},
+ mentors:[
+  {name:"科大认知智能团队",ico:"🧠",title:"信息科学技术学院核心导师团队",
+   tags:["认知计算","自然语言机器人","具身AGI"],
+   bio:"依托国家认知智能重点实验室，在自然语言与机器人交互、认知计算方向积累深厚。与科大讯飞有天然渊源，毕业生在AI大厂受高度欢迎。",spinoff:""},
+ ],
+ results:[
+  {yr:"2024",type:"大模型应用",tc:"var(--cyan)",name:"认知机器人大语言模型融合研究",desc:"将大语言模型与机器人认知系统融合，在人机对话和任务规划方向取得重要突破。",award:""},
+ ],
+ partners:[
+  {ico:"🎤",name:"科大讯飞",type:"深度关联",tc:"var(--cyan)",desc:"天然关联，科大是科大讯飞最重要人才来源，双方深度合作"},
+  {ico:"☁️",name:"阿里通义",type:"大模型合作",tc:"var(--green)",desc:"大模型机器人方向联合研究"},
+ ],
+ gradFlow:[{lbl:"大厂AI部门",pct:55,c:"#00e0ff"},{lbl:"海外留学",pct:25,c:"#4dff91"},{lbl:"创业",pct:20,c:"#ffcc44"}],
+ topDest:["华为","科大讯飞","阿里通义","CMU/Stanford"],
+ tips:["NLP+机器人交叉方向在AGI时代极热门","科大讯飞与科大渊源深，竞争激烈，需要强有力的研究平台吸引","建议通过科大讯飞校招侧面了解人才动向"]},
+
+{id:15,univ:"浙江大学",city:"杭州",x:608,y:308,
+ name:"智能机器人实验室（IRMV相关）",level:"ministry",dept:"控制科学与工程学院",
+ dirs:["移动机器人","SLAM","自主导航","多传感器融合"],
+ tags:["985","SLAM","自主移动","智慧工厂"],
+ students:{ms:40,phd:45,grad:18,msYr:"3年",phdYr:"4-5年"},
+ mentors:[
+  {name:"浙大移动机器人团队",ico:"🚗",title:"控制科学与工程学院导师团队",
+   tags:["SLAM","自主导航","多传感器融合"],
+   bio:"浙大在SLAM和自主移动机器人方向有深厚积累，与国内外工业机器人企业合作密切，毕业生在物流机器人、巡检机器人领域受欢迎。",spinoff:""},
+ ],
+ results:[
+  {yr:"2023",type:"产业落地",tc:"var(--cyan)",name:"工业SLAM自主导航系统",desc:"研发的SLAM导航系统在多家头部工厂成功落地，覆盖半导体/汽车/物流场景。",award:""},
+ ],
+ partners:[
+  {ico:"📦",name:"海康机器人",type:"产学研",tc:"var(--cyan)",desc:"视觉与移动机器人方向深度合作，是浙大移动机器人方向重要合作伙伴"},
+  {ico:"🏭",name:"新松机器人",type:"合作",tc:"var(--green)",desc:"工业移动机器人方向技术合作"},
+ ],
+ gradFlow:[{lbl:"物流/工业机器人",pct:45,c:"#00e0ff"},{lbl:"大厂AI",pct:35,c:"#4dff91"},{lbl:"其他",pct:20,c:"#ffcc44"}],
+ topDest:["海康机器人","新松机器人","华为","字节跳动"],
+ tips:["SLAM方向在智慧工厂、物流、巡检场景需求旺盛","海康机器人关联深厚，可通过其做引荐","每年毕业规模约15-20人"]},
+
+{id:16,univ:"西安交通大学",city:"西安",x:488,y:268,
+ name:"机器人与智能系统研究所",level:"key",dept:"机械工程学院",
+ dirs:["医疗手术机器人","工业机器人","人机协作","精密驱动"],
+ tags:["985","医疗机器人","工业机器人","西部地区龙头"],
+ students:{ms:50,phd:60,grad:24,msYr:"3年",phdYr:"4-5年"},
+ mentors:[
+  {name:"西交机器人核心团队",ico:"⚙️",title:"机械工程学院核心导师团队",
+   tags:["医疗机器人","工业机器人","人机协作"],
+   bio:"西部地区机器人研究龙头，在医疗机器人和工业机器人方向有独特积累，与西安本地航空航天产业链深度合作，毕业生在西部制造业企业深受欢迎。",spinoff:""},
+ ],
+ results:[
+  {yr:"2023",type:"产业成果",tc:"var(--cyan)",name:"手术机器人精密驱动系统",desc:"在医疗手术机器人精密驱动方向取得突破，与多家医疗器械公司合作推进产业化。",award:""},
+ ],
+ partners:[
+  {ico:"✈️",name:"中航工业",type:"长期合作",tc:"var(--cyan)",desc:"航空制造机器人化方向，西交是中航最重要西部合作高校"},
+  {ico:"🏥",name:"西安交大附院",type:"临床合作",tc:"var(--green)",desc:"手术机器人临床验证合作伙伴"},
+ ],
+ gradFlow:[{lbl:"制造/航空企业",pct:45,c:"#00e0ff"},{lbl:"医疗机器人",pct:30,c:"#4dff91"},{lbl:"其他",pct:25,c:"#ffcc44"}],
+ topDest:["中航工业","三星","华为（西安研发中心）"],
+ tips:["西部地区机器人人才稀缺，但西交毕业生对留西部有一定偏好","中航工业关联深厚，通过中航引荐效率较高","3-4月和9-10月各有一批毕业生"]},
+
+{id:17,univ:"电子科技大学",city:"成都",x:475,y:358,
+ name:"机器人研究中心",level:"key",dept:"自动化工程学院",
+ dirs:["智能感知","医疗机器人","脑机接口","人机协作"],
+ tags:["985","脑机接口","医疗","智能感知"],
+ students:{ms:40,phd:50,grad:20,msYr:"3年",phdYr:"4-5年"},
+ mentors:[
+  {name:"电子科大机器人团队",ico:"🧠",title:"自动化工程学院核心导师团队",
+   tags:["脑机接口","医疗机器人","智能感知"],
+   bio:"电子科大在信号处理和感知方向有传统优势，脑机接口+机器人是新兴方向，结合了电子科大的核心强项，在未来人机协作场景中有独特价值。",spinoff:""},
+ ],
+ results:[
+  {yr:"2023",type:"交叉突破",tc:"var(--cyan)",name:"脑机接口驱动机器人控制系统",desc:"基于电子科大信号处理优势，实现脑机接口到机器人控制的闭环系统，在医疗康复场景有重要应用前景。",award:""},
+ ],
+ partners:[
+  {ico:"💊",name:"四川省人民医院",type:"临床合作",tc:"var(--cyan)",desc:"医疗机器人临床研究合作伙伴"},
+  {ico:"🔌",name:"中电科成都分院",type:"研究合作",tc:"var(--green)",desc:"智能感知和信号处理方向联合研究"},
+ ],
+ gradFlow:[{lbl:"医疗/通信企业",pct:45,c:"#00e0ff"},{lbl:"大厂算法",pct:35,c:"#4dff91"},{lbl:"其他",pct:20,c:"#ffcc44"}],
+ topDest:["华为","中电科","迈瑞医疗"],
+ tips:["脑机接口+机器人是前沿交叉方向，人才极稀缺","电子科大信号处理背景在感知方向有独特竞争力","西部地区引进需提供有吸引力的留成都条件"]},
+
+{id:18,univ:"中南大学",city:"长沙",x:538,y:368,
+ name:"轨道交通安全关键技术研究院（机器人方向）",level:"key",dept:"自动化学院",
+ dirs:["检测机器人","轨道巡检","工业视觉","特种机器人"],
+ tags:["985","轨道巡检","检测机器人","高铁","工业视觉"],
+ students:{ms:50,phd:55,grad:24,msYr:"3年",phdYr:"4-5年"},
+ mentors:[
+  {name:"中南大学轨道机器人团队",ico:"🚄",title:"自动化学院核心导师团队",
+   tags:["检测机器人","轨道巡检","工业视觉"],
+   bio:"中南大学轨道交通学科全国A+，机器人方向与轨道交通深度结合，在检测机器人和轨道巡检方向具有全国顶尖地位，服务中国高铁产业链。",spinoff:""},
+ ],
+ results:[
+  {yr:"2023",type:"产业成果",tc:"var(--cyan)",name:"高铁轨道检测机器人系统",desc:"研制的高铁轨道检测机器人已在多条高铁线路投入使用，填补国内空白。",award:""},
+ ],
+ partners:[
+  {ico:"🚄",name:"中国中车",type:"战略合作",tc:"var(--cyan)",desc:"轨道交通机器人战略合作伙伴，是毕业生最重要去向"},
+  {ico:"🏗",name:"中铁工程",type:"合作",tc:"var(--green)",desc:"轨道检测维护机器人系统联合研发"},
+ ],
+ gradFlow:[{lbl:"中车/中铁/铁路局",pct:55,c:"#00e0ff"},{lbl:"工业机器人企业",pct:30,c:"#4dff91"},{lbl:"其他",pct:15,c:"#ffcc44"}],
+ topDest:["中国中车","中铁工程","华为（长沙）"],
+ tips:["轨道巡检机器人是非常垂直的细分方向，但随智能化投入增加，需求旺盛","中车关联极深，可通过中车引荐，效率最高","长沙本地就业偏好较强，远途offer需额外努力"]},
+
+{id:19,univ:"山东大学",city:"济南",x:574,y:246,
+ name:"机器智能与系统控制教育部重点实验室",level:"ministry",dept:"控制科学与工程学院",
+ dirs:["机器智能","系统控制","工业自动化","人机协作"],
+ tags:["985","教育部重点","工业自动化","山东制造业"],
+ students:{ms:50,phd:60,grad:24,msYr:"3年",phdYr:"4-5年"},
+ mentors:[
+  {name:"山大机器人团队",ico:"⚙️",title:"控制科学与工程学院核心导师团队",
+   tags:["机器智能","工业自动化","系统控制"],
+   bio:"山大控制科学与工程学院学科实力雄厚，与山东省制造业龙头深度合作，毕业生在华东地区工业机器人企业受欢迎。",spinoff:""},
+ ],
+ results:[
+  {yr:"2023",type:"产业成果",tc:"var(--cyan)",name:"制造业智能机器人系统",desc:"与山东省多家制造企业合作，推动工业机器人智能化改造。",award:""},
+ ],
+ partners:[
+  {ico:"🏭",name:"山东省制造业龙头",type:"产学研",tc:"var(--cyan)",desc:"与山东省多家制造龙头建立产学研合作"},
+ ],
+ gradFlow:[{lbl:"工业/制造企业",pct:50,c:"#00e0ff"},{lbl:"大厂",pct:30,c:"#4dff91"},{lbl:"其他",pct:20,c:"#ffcc44"}],
+ topDest:["海尔","青岛港","华为（济南）"],
+ tips:["山东制造业体量大，工业机器人需求旺盛","本地就业偏好较强，跨城市招聘需提供竞争力条件","3-4月和9-10月各有批量毕业生"]},
+
+{id:20,univ:"东北大学",city:"沈阳",x:618,y:152,
+ name:"综合自动化国家重点实验室（机器人方向）",level:"national",dept:"信息科学与工程学院",
+ dirs:["工业机器人","流程自动化","智能控制","工业互联网"],
+ tags:["985","国家重点","新松关联","流程工业","沈阳机器人之都"],
+ students:{ms:60,phd:70,grad:28,msYr:"3年",phdYr:"4-5年"},
+ mentors:[
+  {name:"东北大学自动化团队",ico:"🏭",title:"信息科学与工程学院核心导师团队",
+   tags:["流程工业自动化","工业机器人","智能控制"],
+   bio:"东北大学综合自动化国家重点实验室是全国流程工业自动化最权威机构。新松机器人（科创板688248）创始人曲道奎为东北大学系，与实验室保持深度合作，毕业生是新松最重要人才来源。",spinoff:""},
+ ],
+ results:[
+  {yr:"2023",type:"产业里程碑",tc:"var(--cyan)",name:"新松机器人科创板上市",desc:"与东北大学深度关联的新松机器人在科创板上市（688248），成为中国机器人上市公司代表，持续吸纳东北大学毕业生。",award:"科创板上市"},
+ ],
+ partners:[
+  {ico:"🤖",name:"新松机器人（688248.SH）",type:"深度关联",tc:"var(--cyan)",desc:"东北大学系，科创板上市，持续大量招募东大毕业生"},
+  {ico:"🔩",name:"中国中冶",type:"流程合作",tc:"var(--green)",desc:"流程工业自动化和机器人化方向长期合作"},
+ ],
+ gradFlow:[{lbl:"流程工业/化工",pct:45,c:"#00e0ff"},{lbl:"工业机器人企业",pct:35,c:"#4dff91"},{lbl:"其他",pct:20,c:"#ffcc44"}],
+ topDest:["新松机器人","鞍钢","华为","中科院沈阳自动化所"],
+ tips:["新松机器人（沈阳）创始人曲道奎为东大系，产业关系极为紧密","流程工业自动化背景在化工/冶金场景有独特优势","沈阳被称为'机器人之都'，本地产业生态好","通过新松机器人校园合作切入是最佳渠道"]},
+];
+
+// Province paths for map
+const PROVS=[
+  "M580,78 L700,78 L715,148 L638,156 L580,130 Z",
+  "M598,150 L672,148 L680,175 L618,180 Z",
+  "M590,174 L656,170 L658,200 L592,204 Z",
+  "M365,88 L582,78 L582,170 L448,170 L365,140 Z",
+  "M92,96 L316,96 L336,248 L176,278 L86,218 Z",
+  "M176,278 L376,268 L396,368 L196,378 Z",
+  "M316,238 L426,228 L446,308 L336,318 Z",
+  "M346,198 L466,183 L486,278 L416,288 L356,258 Z",
+  "M450,208 L486,203 L490,238 L450,243 Z",
+  "M466,238 L511,233 L516,318 L470,323 Z",
+  "M508,198 L551,193 L554,253 L511,258 Z",
+  "M531,173 L590,170 L593,213 L541,218 Z",
+  "M538,188 L562,186 L564,213 L540,215 Z",
+  "M562,198 L584,196 L585,218 L563,220 Z",
+  "M546,228 L614,223 L617,266 L548,268 Z",
+  "M503,256 L561,253 L563,306 L503,310 Z",
+  "M571,263 L621,260 L624,310 L573,313 Z",
+  "M550,293 L589,290 L591,333 L552,336 Z",
+  "M589,298 L631,295 L634,333 L591,336 Z",
+  "M614,293 L634,291 L636,314 L616,316 Z",
+  "M496,318 L566,314 L568,358 L498,362 Z",
+  "M498,358 L561,355 L563,398 L500,402 Z",
+  "M558,333 L601,330 L604,376 L560,380 Z",
+  "M586,338 L634,335 L636,383 L588,386 Z",
+  "M493,398 L596,394 L598,448 L496,452 Z",
+  "M451,393 L496,390 L498,440 L454,444 Z",
+  "M391,293 L476,288 L478,378 L394,382 Z",
+  "M449,376 L503,372 L505,416 L451,420 Z",
+  "M391,376 L451,372 L453,448 L394,452 Z",
+  "M471,348 L514,345 L516,383 L473,387 Z",
+  "M516,456 L551,454 L552,486 L518,488 Z",
+];
+
+// ════ CITY MAP ════
+const cityMap={};
+LABS.forEach(l=>{
+  if(!cityMap[l.city])cityMap[l.city]={x:l.x,y:l.y,labs:[]};
+  cityMap[l.city].labs.push(l);
+});
+
+// ════ PAGE NAV ════
+function goPg(id){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('act'));
+  document.querySelectorAll('.nbtn').forEach((b,i)=>{
+    b.classList.toggle('act',['home','map','labs'][i]===id);
+  });
+  document.getElementById('pg-'+id).classList.add('act');
+  if(id==='map'){setTimeout(buildMap,40);}
+  if(id==='labs'){renderGrid(filteredLabs());}
+}
+
+// ════ DIR CLOUD ════
+(function(){
+  const dirs={};
+  LABS.forEach(l=>l.dirs.forEach(d=>dirs[d]=(dirs[d]||0)+1));
+  const el=document.getElementById('dirCloud');
+  Object.entries(dirs).sort((a,b)=>b[1]-a[1]).forEach(([d])=>{
+    const s=document.createElement('span');
+    s.className='dc-tag';s.textContent=d;
+    s.onclick=()=>{document.getElementById('lcSearch').value=d;goPg('labs');};
+    el.appendChild(s);
+  });
+})();
+
+// Nav count
+document.getElementById('navCnt').textContent=LABS.length+' Labs';
+
+// ════ MAP ════
+let mapBuilt=false,mapFilter='all';
+function buildMap(){
+  if(mapBuilt){refreshNodes();refreshSidebar();return;}
+  mapBuilt=true;
+  const svg=document.getElementById('svgmap');
+  const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
+  defs.innerHTML=`<pattern id="g" width="32" height="32" patternUnits="userSpaceOnUse">
+    <path d="M32 0L0 0 0 32" fill="none" stroke="#0a1628" stroke-width=".5"/></pattern>
+    <radialGradient id="bg" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#0d1f38" stop-opacity=".6"/>
+      <stop offset="100%" stop-color="#05080f" stop-opacity="1"/></radialGradient>`;
+  svg.appendChild(defs);
+  const bg=el('rect',{width:'900',height:'680',fill:'url(#bg)'});svg.appendChild(bg);
+  const grid=el('rect',{width:'900',height:'680',fill:'url(#g)'});svg.appendChild(grid);
+  const pg=el('g');
+  PROVS.forEach(d=>{const p=el('path',{d,class:'mpv'});pg.appendChild(p);});
+  svg.appendChild(pg);
+  const ng=el('g',{id:'nodeGrp'});svg.appendChild(ng);
+  let vb={x:0,y:0,w:900,h:680},pan=false,sx,sy;
+  svg.addEventListener('mousedown',e=>{if(e.target.closest('.mnode'))return;pan=true;sx=e.clientX;sy=e.clientY;});
+  window.addEventListener('mousemove',e=>{
+    if(!pan)return;
+    vb.x-=(e.clientX-sx)*vb.w/svg.clientWidth;
+    vb.y-=(e.clientY-sy)*vb.h/svg.clientHeight;
+    sx=e.clientX;sy=e.clientY;
+    svg.setAttribute('viewBox',`${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
+  });
+  window.addEventListener('mouseup',()=>pan=false);
+  svg.addEventListener('wheel',e=>{
+    e.preventDefault();
+    const f=e.deltaY>0?1.12:.9;
+    const mx=(e.offsetX/svg.clientWidth)*vb.w+vb.x;
+    const my=(e.offsetY/svg.clientHeight)*vb.h+vb.y;
+    vb.w*=f;vb.h*=f;vb.x=mx-(e.offsetX/svg.clientWidth)*vb.w;vb.y=my-(e.offsetY/svg.clientHeight)*vb.h;
+    svg.setAttribute('viewBox',`${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
+  },{passive:false});
+  document.getElementById('mdCl').onclick=()=>document.getElementById('mapDet').classList.remove('show');
+  refreshNodes();refreshSidebar();
+}
+function el(tag,attrs={}){
+  const e=document.createElementNS('http://www.w3.org/2000/svg',tag);
+  Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));
+  return e;
+}
+function mapFilteredLabs(){
+  const q=document.getElementById('msSearch').value.toLowerCase();
+  return LABS.filter(l=>{
+    const fm=mapFilter==='all'||l.level===mapFilter;
+    const fq=!q||l.name.includes(q)||l.univ.includes(q)||l.city.includes(q)||l.dirs.some(d=>d.includes(q));
+    return fm&&fq;
+  });
+}
+function refreshNodes(){
+  const ng=document.getElementById('nodeGrp');if(!ng)return;
+  ng.innerHTML='';
+  const fl=mapFilteredLabs();
+  const ids=new Set(fl.map(l=>l.id));
+  const tip=document.getElementById('mapTip');
+  const mm=document.getElementById('mapMain');
+  const pri=['national','ministry','key','general'];
+  Object.entries(cityMap).forEach(([city,data])=>{
+    const vl=data.labs.filter(l=>ids.has(l.id));
+    if(!vl.length)return;
+    const color=`var(--${pri.find(p=>vl.some(l=>l.level===p))||'gen'})`
+      .replace('national','nat').replace('ministry','min').replace('key','key').replace('general','gen');
+    const rawColor=vl.some(l=>l.level==='national')?'#00e0ff':vl.some(l=>l.level==='ministry')?'#4dff91':vl.some(l=>l.level==='key')?'#ffcc44':'#c084fc';
+    const sz=Math.min(5+vl.length*2.8,20);
+    const g=el('g',{class:'mnode',transform:`translate(${data.x},${data.y})`});
+    const ring=el('circle',{class:'mring',cx:'0',cy:'0',r:sz+7,stroke:rawColor});
+    ring.style.animationDelay=(Math.random()*2.5)+'s';g.appendChild(ring);
+    const core=el('circle',{class:'mcore',cx:'0',cy:'0',r:sz,fill:rawColor,'fill-opacity':'.82',stroke:rawColor,'stroke-width':'1'});
+    g.appendChild(core);
+    if(vl.length>1){
+      const t=el('text',{x:'0',y:'4','text-anchor':'middle','font-family':'JetBrains Mono,monospace','font-size':'9',fill:'#000','font-weight':'700'});
+      t.textContent=vl.length;g.appendChild(t);
+    }
+    const lbl=el('text',{class:'mlabel',x:'0',y:sz+13});lbl.textContent=city;g.appendChild(lbl);
+    g.addEventListener('mouseenter',e=>{
+      core.setAttribute('r',sz*1.35);core.setAttribute('fill-opacity','1');
+      document.getElementById('tipCity').textContent=city+' · '+vl.length+' 个实验室';
+      document.getElementById('tipItems').innerHTML=vl.slice(0,3).map(l=>`<div style="color:${vl[0].level==='national'?'#00e0ff':vl[0].level==='ministry'?'#4dff91':vl[0].level==='key'?'#ffcc44':'#c084fc'};font-size:10px;margin-top:3px">· ${l.name}</div>`).join('')+(vl.length>3?`<div style="color:var(--text3);font-size:10px;margin-top:2px">还有${vl.length-3}个...</div>`:'');
+      const mr=mm.getBoundingClientRect();const gr=g.getBoundingClientRect();
+      tip.style.left=(gr.left-mr.left+22)+'px';tip.style.top=(gr.top-mr.top-10)+'px';
+      tip.classList.add('show');
+    });
+    g.addEventListener('mouseleave',()=>{core.setAttribute('r',sz);core.setAttribute('fill-opacity','.82');tip.classList.remove('show');});
+    g.addEventListener('click',()=>showMapDet(vl[0]));
+    ng.appendChild(g);
+  });
+  const fl2=mapFilteredLabs();
+  document.getElementById('mstU').textContent=new Set(fl2.map(l=>l.univ)).size;
+  document.getElementById('mstL').textContent=fl2.length;
+  document.getElementById('mstN').textContent=fl2.filter(l=>l.level==='national').length;
+}
+function showMapDet(lab){
+  window._curLab=lab;
+  const rawColor=lab.level==='national'?'#00e0ff':lab.level==='ministry'?'#4dff91':lab.level==='key'?'#ffcc44':'#c084fc';
+  document.getElementById('mdU').textContent=lab.univ+' · '+lab.city;
+  document.getElementById('mdN').textContent=lab.name;
+  document.getElementById('mdCity').textContent=lab.city;
+  document.getElementById('mdDirs').textContent=lab.dirs.join('、');
+  document.getElementById('mdLv').innerHTML=`<span style="color:${rawColor}">${LN[lab.level]}</span>`;
+  document.getElementById('mdStu').textContent=`硕士${lab.students.ms}人 / 博士${lab.students.phd}人`;
+  document.getElementById('mdTags').innerHTML=lab.tags.map(t=>`<span class="md-tag">${t}</span>`).join('');
+  document.getElementById('mapDet').classList.add('show');
+  document.querySelectorAll('.ms-item').forEach(i=>i.classList.remove('sel'));
+  const item=document.querySelector(`.ms-item[data-id="${lab.id}"]`);
+  if(item){item.classList.add('sel');item.scrollIntoView({behavior:'smooth',block:'nearest'});}
+}
+function refreshSidebar(){
+  const fl=mapFilteredLabs();
+  document.getElementById('msCnt').textContent=fl.length;
+  const list=document.getElementById('msList');list.innerHTML='';
+  fl.forEach(lab=>{
+    const rawColor=lab.level==='national'?'#00e0ff':lab.level==='ministry'?'#4dff91':lab.level==='key'?'#ffcc44':'#c084fc';
+    const d=document.createElement('div');d.className='ms-item';d.dataset.id=lab.id;
+    d.innerHTML=`<div class="ms-row"><div class="ms-dot" style="background:${rawColor}"></div><div class="ms-nm">${lab.name}</div><div class="ms-bge" style="background:${rawColor}22;color:${rawColor}">${lab.level==='national'?'全国':lab.level==='ministry'?'教育部':lab.level==='key'?'省部级':'校级'}</div></div><div class="ms-u">${lab.univ} · ${lab.city}</div>`;
+    d.addEventListener('click',()=>{showMapDet(lab);document.querySelectorAll('.ms-item').forEach(i=>i.classList.remove('sel'));d.classList.add('sel');});
+    list.appendChild(d);
+  });
+}
+document.querySelector('.ms-flt').addEventListener('click',e=>{
+  if(!e.target.dataset.f)return;
+  mapFilter=e.target.dataset.f;
+  document.querySelectorAll('.mf').forEach(b=>b.classList.toggle('act',b.dataset.f===mapFilter));
+  refreshNodes();refreshSidebar();
+});
+document.getElementById('msSearch').addEventListener('input',()=>{refreshNodes();refreshSidebar();});
+
+// ════ LABS GRID ════
+let labsFilter='all';
+function filteredLabs(){
+  const q=document.getElementById('lcSearch').value.toLowerCase();
+  return LABS.filter(l=>{
+    const fm=labsFilter==='all'||l.level===labsFilter;
+    const fq=!q||l.name.includes(q)||l.univ.includes(q)||l.city.includes(q)||l.dirs.some(d=>d.includes(q))||l.tags.some(t=>t.toLowerCase().includes(q));
+    return fm&&fq;
+  });
+}
+function renderGrid(labs){
+  document.getElementById('lcCnt').textContent=labs.length+' 个实验室';
+  const g=document.getElementById('labsGrid');g.innerHTML='';
+  if(!labs.length){g.innerHTML='<div class="no-res">暂无匹配结果</div>';return;}
+  labs.forEach(lab=>{
+    const rawColor=lab.level==='national'?'#00e0ff':lab.level==='ministry'?'#4dff91':lab.level==='key'?'#ffcc44':'#c084fc';
+    const lvShort=lab.level==='national'?'全国重点':lab.level==='ministry'?'教育部':lab.level==='key'?'省部级':'校级';
+    const card=document.createElement('div');card.className=`lab-card ${lab.level}`;
+    card.innerHTML=`<div class="lcard-top"><div class="lc-dot" style="background:${rawColor}"></div><div class="lc-info"><div class="lc-nm">${lab.name}</div><div class="lc-uv">${lab.univ} · ${lab.city}</div></div><div class="lc-lv" style="background:${rawColor}18;color:${rawColor}">${lvShort}</div></div>
+    <div class="lcard-intel">
+      <div class="ichip ic-s">🎓 硕${lab.students.ms}/博${lab.students.phd}</div>
+      <div class="ichip ic-c">📅 年毕业≈${lab.students.grad}人</div>
+      <div class="ichip ic-h">🤝 ${lab.partners.slice(0,1).map(p=>p.name).join('')}</div>
+      <div class="ichip ic-d">🔬 ${lab.mentors.slice(0,1).map(m=>m.name).join('')}</div>
+    </div>
+    <div class="lcard-dirs">${lab.dirs.map(d=>`<span class="lc-dir">${d}</span>`).join('')}</div>`;
+    card.addEventListener('click',()=>openModal(lab));
+    g.appendChild(card);
+  });
+}
+document.querySelector('.lc-flts').addEventListener('click',e=>{
+  if(!e.target.dataset.lf)return;
+  labsFilter=e.target.dataset.lf;
+  document.querySelectorAll('.lcf').forEach(b=>b.classList.toggle('act',b.dataset.lf===labsFilter));
+  renderGrid(filteredLabs());
+});
+document.getElementById('lcSearch').addEventListener('input',()=>renderGrid(filteredLabs()));
+renderGrid(LABS);
+
+// ════ MODAL ════
+function openModal(lab){
+  if(!lab)return;
+  const rawColor=lab.level==='national'?'#00e0ff':lab.level==='ministry'?'#4dff91':lab.level==='key'?'#ffcc44':'#c084fc';
+  document.getElementById('mBadge').innerHTML=`<span style="color:${rawColor}">${LN[lab.level]}</span>`;
+  document.getElementById('mBadge').style.background=`${rawColor}14`;document.getElementById('mBadge').style.border=`1px solid ${rawColor}30`;
+  document.getElementById('mName').textContent=lab.name;
+  document.getElementById('mSub').textContent=`${lab.univ} · ${lab.city} · ${lab.dept}`;
+  // Overview
+  document.getElementById('tab-overview').innerHTML=`
+    <div class="info-grid">
+      <div class="ibox"><div class="ib-l">实验室级别</div><div class="ib-v" style="color:${rawColor};font-size:13px">${LN[lab.level]}</div></div>
+      <div class="ibox"><div class="ib-l">依托学院</div><div class="ib-v" style="font-size:12px">${lab.dept}</div></div>
+      <div class="ibox"><div class="ib-l">在读硕士</div><div class="ib-v">${lab.students.ms}人</div><div class="ib-s">学制${lab.students.msYr}，每年入学约${Math.round(lab.students.ms/3)}人</div></div>
+      <div class="ibox"><div class="ib-l">在读博士</div><div class="ib-v">${lab.students.phd}人</div><div class="ib-s">学制${lab.students.phdYr}，每年入学约${Math.round(lab.students.phd/5)}人</div></div>
+      <div class="ibox"><div class="ib-l">年均毕业</div><div class="ib-v">${lab.students.grad}人</div><div class="ib-s">毕业高峰：6月/12月</div></div>
+      <div class="ibox"><div class="ib-l">核心方向</div><div class="ib-v" style="font-size:12px">${lab.dirs.slice(0,2).join('、')}</div></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:5px;">${lab.tags.map(t=>`<span style="font-size:10px;padding:2px 8px;border-radius:5px;background:rgba(0,224,255,.08);border:1px solid rgba(0,224,255,.15);color:var(--cyan)">${t}</span>`).join('')}</div>`;
+  // Mentors
+  document.getElementById('tab-mentors').innerHTML=`<div class="mentor-list">${lab.mentors.map(m=>`
+    <div class="mc"><div class="m-top"><div class="m-av">${m.ico}</div><div class="m-info"><div class="m-nm">${m.name}</div><div class="m-ti">${m.title}</div><div class="m-tags">${m.tags.map(t=>`<span class="mtag mt-c">${t}</span>`).join('')}</div></div></div>
+    <div class="m-bio">${m.bio}</div>${m.spinoff?`<div class="m-spinoff">🚀 孵化/关联：${m.spinoff}</div>`:''}</div>`).join('')}</div>`;
+  // Results
+  document.getElementById('tab-results').innerHTML=`<div class="res-list">${lab.results.map(r=>`
+    <div class="ri"><div class="ri-top"><span class="ri-yr">${r.yr}</span><span class="ri-tp" style="background:${r.tc}18;color:${r.tc}">${r.type}</span></div>
+    <div class="ri-nm">${r.name}</div><div class="ri-d">${r.desc}</div>${r.award?`<div class="ri-aw">🏆 ${r.award}</div>`:''}</div>`).join('')}</div>`;
+  // Partners
+  document.getElementById('tab-partners').innerHTML=`<div class="partner-list">${lab.partners.map(p=>`
+    <div class="pi"><div class="pi-ico">${p.ico}</div><div><div class="pi-nm">${p.name}</div><span class="pi-tp" style="background:${p.tc}18;color:${p.tc}">${p.type}</span><div class="pi-d">${p.desc}</div></div></div>`).join('')}</div>`;
+  // Students
+  const totalPct=lab.gradFlow.reduce((a,b)=>a+b.pct,0);
+  document.getElementById('tab-students').innerHTML=`
+    <div class="stu-kpi">
+      <div class="sk"><div class="sk-n">${lab.students.ms}</div><div class="sk-l">在读硕士</div></div>
+      <div class="sk"><div class="sk-n">${lab.students.phd}</div><div class="sk-l">在读博士</div></div>
+      <div class="sk"><div class="sk-n">${lab.students.grad}</div><div class="sk-l">年均毕业</div></div>
+    </div>
+    <div class="flow-box"><div class="flow-t">📊 毕业去向分布</div>
+      ${lab.gradFlow.map(f=>`<div class="flow-row"><div class="flow-lbl">${f.lbl}</div><div class="flow-trk"><div class="flow-fill" style="width:${f.pct}%;background:${f.c}"></div></div><div class="flow-pct">${f.pct}%</div></div>`).join('')}
+    </div>
+    <div class="dest-box"><div class="dest-t">🏢 主要流向企业</div><div class="dest-tags">${lab.topDest.map(d=>`<span class="dest-tag">${d}</span>`).join('')}</div></div>
+    <div class="tips-box"><div class="tips-t">💡 招聘接触建议</div>${lab.tips.map(t=>`<div class="tip-row">${t}</div>`).join('')}</div>`;
+  switchTab('overview');
+  document.getElementById('modalOv').classList.add('show');
+}
+function switchTab(t){
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>{b.classList.toggle('act',['overview','mentors','results','partners','students'][i]===t);});
+  document.querySelectorAll('.tab-pn').forEach(p=>p.classList.remove('act'));
+  document.getElementById('tab-'+t).classList.add('act');
+}
+function closeModal(){document.getElementById('modalOv').classList.remove('show');}
+function closeModalEv(e){if(e.target===document.getElementById('modalOv'))closeModal();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+</script>
+</body>
+</html>
