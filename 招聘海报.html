@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>招聘海报 · RoboLab Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#040a12;--bg2:#07101d;--bg3:#0b1828;
+  --cyan:#00e0ff;--green:#4dff91;--gold:#ffcc44;--purple:#c084fc;--red:#ff6b6b;
+  --text:#b8d0e8;--text2:#6a8ba8;--text3:#344d65;--white:#eaf4ff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--bg);
+  font-family:'Noto Sans SC',sans-serif;
+  min-height:100vh;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  padding:40px 20px 80px;
+}
+.poster{
+  width:800px;
+  max-width:100%;
+  position:relative;
+  overflow:hidden;
+  border-radius:20px;
+  border:1px solid rgba(0,224,255,.15);
+  background:linear-gradient(160deg,#061220 0%,#040a12 40%,#060e1a 100%);
+  box-shadow:0 0 80px rgba(0,224,255,.07),0 40px 100px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+/* ── 背景装饰 ── */
+.bg-grid{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(0,224,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,224,255,.025) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 100% 100% at 50% 0%,black 30%,transparent 90%);
+}
+.bg-glow{
+  position:absolute;top:-120px;left:50%;transform:translateX(-50%);
+  width:700px;height:400px;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 0%,rgba(0,224,255,.12) 0%,rgba(77,255,145,.04) 40%,transparent 70%);
+}
+.bg-orb1{
+  position:absolute;top:200px;right:-80px;
+  width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(192,132,252,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.bg-orb2{
+  position:absolute;bottom:100px;left:-60px;
+  width:250px;height:250px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,224,255,.05) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+/* ── HEADER ── */
+.header{
+  padding:44px 52px 32px;
+  position:relative;
+}
+.header-top{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:28px;
+}
+.logo{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;font-weight:700;
+  color:var(--cyan);letter-spacing:4px;
+  text-shadow:0 0 20px rgba(0,224,255,.5);
+}
+.logo span{color:var(--text3);}
+.badge-now-hiring{
+  display:flex;align-items:center;gap:7px;
+  padding:6px 16px;
+  border-radius:20px;
+  background:linear-gradient(135deg,rgba(0,224,255,.12),rgba(77,255,145,.06));
+  border:1px solid rgba(0,224,255,.3);
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:3px;color:var(--cyan);
+}
+.badge-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--cyan);
+  box-shadow:0 0 8px var(--cyan);
+  animation:blink 1.4s ease-in-out infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+.headline-tag{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:5px;color:var(--text3);
+  text-transform:uppercase;margin-bottom:10px;
+}
+.headline{
+  font-family:'Noto Serif SC',serif;
+  font-size:52px;font-weight:900;
+  color:var(--white);
+  line-height:1.1;
+  letter-spacing:-1px;
+}
+.headline em{
+  font-style:normal;
+  background:linear-gradient(90deg,var(--cyan) 0%,var(--green) 60%,var(--cyan) 100%);
+  background-size:200%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shimmer 4s linear infinite;
+}
+@keyframes shimmer{0%{background-position:0%}100%{background-position:200%}}
+
+.sub-headline{
+  margin-top:10px;
+  font-size:15px;color:var(--text2);
+  font-weight:300;letter-spacing:1px;line-height:1.7;
+}
+.divider-line{
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(0,224,255,.25) 30%,rgba(77,255,145,.15) 70%,transparent);
+  margin:28px 0;
+}
+
+/* ── STATS BAR ── */
+.stats-bar{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-radius:12px;overflow:hidden;
+  border:1px solid rgba(0,224,255,.1);
+  background:rgba(0,224,255,.02);
+  margin:0 52px;
+}
+.stat{
+  padding:16px 0;text-align:center;
+  border-right:1px solid rgba(0,224,255,.08);
+}
+.stat:last-child{border-right:none;}
+.stat-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:22px;font-weight:700;color:var(--cyan);
+  line-height:1;
+}
+.stat-num.green{color:var(--green);}
+.stat-num.gold{color:var(--gold);}
+.stat-num.purple{color:var(--purple);}
+.stat-label{font-size:10px;color:var(--text3);margin-top:5px;}
+
+/* ── POSITIONS ── */
+.positions{padding:36px 52px;}
+.section-title{
+  display:flex;align-items:center;gap:10px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:4px;color:var(--text3);
+  text-transform:uppercase;margin-bottom:18px;
+}
+.section-title::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,rgba(0,224,255,.15),transparent);
+}
+
+.job-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+.job-card{
+  background:rgba(255,255,255,.018);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:12px;padding:18px 20px;
+  position:relative;overflow:hidden;
+  transition:all .25s;
+  cursor:default;
+}
+.job-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;
+}
+.job-card.cat-ai::before{background:var(--cyan);}
+.job-card.cat-hw::before{background:var(--gold);}
+.job-card.cat-sw::before{background:var(--green);}
+.job-card.cat-biz::before{background:var(--purple);}
+
+.job-card::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at top left,rgba(0,224,255,.04),transparent 60%);
+  opacity:0;transition:opacity .25s;
+}
+.job-card.cat-hw::after{background:radial-gradient(ellipse at top left,rgba(255,204,68,.04),transparent 60%);}
+.job-card.cat-sw::after{background:radial-gradient(ellipse at top left,rgba(77,255,145,.04),transparent 60%);}
+.job-card.cat-biz::after{background:radial-gradient(ellipse at top left,rgba(192,132,252,.04),transparent 60%);}
+.job-card:hover{border-color:rgba(0,224,255,.2);transform:translateY(-2px);}
+.job-card:hover::after{opacity:1;}
+
+.job-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px;}
+.job-title{font-size:14px;font-weight:600;color:var(--white);line-height:1.3;}
+.job-badge{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;padding:2px 8px;border-radius:6px;
+  white-space:nowrap;flex-shrink:0;
+}
+.badge-ai{background:rgba(0,224,255,.1);color:var(--cyan);border:1px solid rgba(0,224,255,.2);}
+.badge-hw{background:rgba(255,204,68,.1);color:var(--gold);border:1px solid rgba(255,204,68,.2);}
+.badge-sw{background:rgba(77,255,145,.1);color:var(--green);border:1px solid rgba(77,255,145,.2);}
+.badge-biz{background:rgba(192,132,252,.1);color:var(--purple);border:1px solid rgba(192,132,252,.2);}
+
+.job-sub{font-size:11px;color:var(--text2);margin-bottom:10px;line-height:1.5;}
+.job-tags{display:flex;flex-wrap:wrap;gap:4px;}
+.job-tag{
+  font-size:10px;padding:2px 7px;border-radius:4px;
+  background:rgba(255,255,255,.04);color:var(--text3);
+}
+.job-salary{
+  margin-top:10px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;font-weight:700;color:var(--gold);
+}
+
+/* ── BENEFITS ── */
+.benefits{
+  padding:0 52px 36px;
+}
+.benefits-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.benefit{
+  text-align:center;padding:16px 10px;
+  background:rgba(255,255,255,.015);
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:10px;
+}
+.benefit-ico{font-size:22px;margin-bottom:8px;}
+.benefit-title{font-size:11px;font-weight:600;color:var(--white);margin-bottom:3px;}
+.benefit-desc{font-size:10px;color:var(--text3);line-height:1.5;}
+
+/* ── REQUIREMENTS ── */
+.requirements{
+  margin:0 52px 36px;
+  background:linear-gradient(135deg,rgba(0,224,255,.04),rgba(77,255,145,.02));
+  border:1px solid rgba(0,224,255,.12);
+  border-radius:12px;
+  padding:22px 24px;
+}
+.req-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;}
+.req-item{
+  display:flex;align-items:flex-start;gap:7px;
+  font-size:12px;color:var(--text);line-height:1.6;
+}
+.req-arrow{color:var(--cyan);flex-shrink:0;font-size:10px;margin-top:3px;}
+
+/* ── COMPANY STRIP ── */
+.company-strip{
+  margin:0 52px 36px;
+  display:flex;align-items:center;gap:20px;
+  padding:20px 24px;
+  background:rgba(0,0,0,.2);
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:12px;
+}
+.company-logo-area{
+  width:56px;height:56px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(0,224,255,.15),rgba(77,255,145,.08));
+  border:1px solid rgba(0,224,255,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;font-weight:700;color:var(--cyan);
+  flex-shrink:0;letter-spacing:1px;
+  text-align:center;line-height:1.3;
+}
+.company-info{flex:1;}
+.company-name{font-size:16px;font-weight:700;color:var(--white);margin-bottom:3px;}
+.company-desc{font-size:11px;color:var(--text2);line-height:1.6;}
+.company-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.ctag{
+  font-size:10px;padding:2px 8px;border-radius:4px;
+  background:rgba(0,224,255,.07);color:var(--cyan);
+  border:1px solid rgba(0,224,255,.15);
+}
+
+/* ── CTA FOOTER ── */
+.cta-footer{
+  padding:28px 52px 44px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:20px;
+  border-top:1px solid rgba(255,255,255,.05);
+  background:linear-gradient(180deg,transparent,rgba(0,224,255,.02));
+}
+.cta-left{flex:1;}
+.cta-title{font-size:16px;font-weight:700;color:var(--white);margin-bottom:4px;}
+.cta-sub{font-size:11px;color:var(--text2);}
+.cta-contact{
+  display:flex;gap:12px;margin-top:14px;flex-wrap:wrap;
+}
+.contact-item{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;color:var(--text2);
+}
+.contact-ico{color:var(--cyan);}
+.cta-right{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.qr-box{
+  width:90px;height:90px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(0,224,255,.15);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.qr-inner{
+  display:grid;grid-template-columns:repeat(7,10px);
+  grid-template-rows:repeat(7,10px);
+  gap:1.5px;
+}
+.qr-cell{border-radius:1.5px;}
+.qr-box-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;color:var(--text3);letter-spacing:1px;
+}
+.btn-apply{
+  padding:12px 28px;
+  border-radius:8px;
+  background:linear-gradient(135deg,var(--cyan),#00a8cc);
+  color:#000;
+  font-size:13px;font-weight:700;
+  border:none;cursor:pointer;
+  font-family:'Noto Sans SC',sans-serif;
+  letter-spacing:2px;
+  box-shadow:0 4px 20px rgba(0,224,255,.25);
+  transition:all .2s;
+  white-space:nowrap;
+}
+.btn-apply:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,224,255,.4);}
+
+/* ── SCAN LINE ANIMATION ── */
+.scanline{
+  position:absolute;top:0;left:0;right:0;
+  height:2px;
+  background:linear-gradient(90deg,transparent,rgba(0,224,255,.15),transparent);
+  animation:scan 6s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes scan{
+  0%{top:0;opacity:0;}
+  5%{opacity:1;}
+  95%{opacity:1;}
+  100%{top:100%;opacity:0;}
+}
+
+/* ── CORNER MARKS ── */
+.corner{position:absolute;width:20px;height:20px;pointer-events:none;}
+.corner::before,.corner::after{content:'';position:absolute;background:var(--cyan);}
+.corner::before{width:100%;height:1px;top:0;}
+.corner::after{width:1px;height:100%;left:0;}
+.c-tl{top:14px;left:14px;}
+.c-tr{top:14px;right:14px;transform:scaleX(-1);}
+.c-bl{bottom:14px;left:14px;transform:scaleY(-1);}
+.c-br{bottom:14px;right:14px;transform:scale(-1);}
+</style>
+</head>
+<body>
+<div class="poster">
+  <!-- Background decorations -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+  <div class="bg-orb1"></div>
+  <div class="bg-orb2"></div>
+  <div class="scanline"></div>
+  <!-- Corner marks -->
+  <div class="corner c-tl"></div>
+  <div class="corner c-tr"></div>
+  <div class="corner c-bl"></div>
+  <div class="corner c-br"></div>
+
+  <!-- ── HEADER ── -->
+  <div class="header">
+    <div class="header-top">
+      <div class="logo">ROBO<span>INTELLI</span>·AI</div>
+      <div class="badge-now-hiring">
+        <div class="badge-dot"></div>
+        NOW HIRING
+      </div>
+    </div>
+    <div class="headline-tag">2025 · 机器人智能科技 · 全球招募</div>
+    <h1 class="headline">加入我们<br><em>共创未来</em></h1>
+    <p class="sub-headline">面向机器人 · 具身智能 · 大模型方向<br>寻找热爱技术、渴望改变世界的顶尖人才</p>
+  </div>
+
+  <!-- ── STATS ── -->
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-num">18</div>
+      <div class="stat-label">开放岗位</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num green">30K+</div>
+      <div class="stat-label">月薪上限</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num gold">8</div>
+      <div class="stat-label">城市分支</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num purple">B+</div>
+      <div class="stat-label">融资轮次</div>
+    </div>
+  </div>
+
+  <!-- ── POSITIONS ── -->
+  <div class="positions">
+    <div class="section-title">热招岗位</div>
+    <div class="job-grid">
+
+      <div class="job-card cat-ai">
+        <div class="job-top">
+          <div class="job-title">具身智能算法工程师</div>
+          <div class="job-badge badge-ai">AI · 算法</div>
+        </div>
+        <div class="job-sub">负责机器人感知-决策-控制全链路算法研发，VLA大模型落地部署</div>
+        <div class="job-tags">
+          <span class="job-tag">强化学习</span>
+          <span class="job-tag">VLA</span>
+          <span class="job-tag">PyTorch</span>
+          <span class="job-tag">灵巧操作</span>
+        </div>
+        <div class="job-salary">25K–40K · 期权</div>
+      </div>
+
+      <div class="job-card cat-hw">
+        <div class="job-top">
+          <div class="job-title">机器人本体结构工程师</div>
+          <div class="job-badge badge-hw">硬件 · 机械</div>
+        </div>
+        <div class="job-sub">负责人形/四足机器人本体结构设计、仿真优化及整机集成测试</div>
+        <div class="job-tags">
+          <span class="job-tag">SolidWorks</span>
+          <span class="job-tag">有限元</span>
+          <span class="job-tag">人形机器人</span>
+          <span class="job-tag">机构设计</span>
+        </div>
+        <div class="job-salary">20K–35K · 期权</div>
+      </div>
+
+      <div class="job-card cat-sw">
+        <div class="job-top">
+          <div class="job-title">机器人软件架构师</div>
+          <div class="job-badge badge-sw">软件 · 系统</div>
+        </div>
+        <div class="job-sub">ROS2/中间件研发，机器人操作系统底层设计，实时控制系统优化</div>
+        <div class="job-tags">
+          <span class="job-tag">ROS2</span>
+          <span class="job-tag">C++</span>
+          <span class="job-tag">实时系统</span>
+          <span class="job-tag">嵌入式</span>
+        </div>
+        <div class="job-salary">22K–38K · 期权</div>
+      </div>
+
+      <div class="job-card cat-ai">
+        <div class="job-top">
+          <div class="job-title">3D视觉感知工程师</div>
+          <div class="job-badge badge-ai">AI · 视觉</div>
+        </div>
+        <div class="job-sub">点云处理、深度估计、6D位姿识别，服务机器人灵巧操作感知模块</div>
+        <div class="job-tags">
+          <span class="job-tag">PointNet</span>
+          <span class="job-tag">3D视觉</span>
+          <span class="job-tag">SLAM</span>
+          <span class="job-tag">CUDA</span>
+        </div>
+        <div class="job-salary">23K–38K · 期权</div>
+      </div>
+
+      <div class="job-card cat-hw">
+        <div class="job-top">
+          <div class="job-title">驱动与运动控制工程师</div>
+          <div class="job-badge badge-hw">硬件 · 控制</div>
+        </div>
+        <div class="job-sub">关节驱动器研发、力控算法实现、高动态运动控制系统设计</div>
+        <div class="job-tags">
+          <span class="job-tag">力控</span>
+          <span class="job-tag">伺服驱动</span>
+          <span class="job-tag">MPC</span>
+          <span class="job-tag">电机控制</span>
+        </div>
+        <div class="job-salary">20K–35K · 期权</div>
+      </div>
+
+      <div class="job-card cat-biz">
+        <div class="job-top">
+          <div class="job-title">机器人产品经理</div>
+          <div class="job-badge badge-biz">产品 · 商业</div>
+        </div>
+        <div class="job-sub">机器人商业化落地场景挖掘，产品规划与客户解决方案设计</div>
+        <div class="job-tags">
+          <span class="job-tag">产品规划</span>
+          <span class="job-tag">机器人行业</span>
+          <span class="job-tag">商业化</span>
+          <span class="job-tag">B端销售</span>
+        </div>
+        <div class="job-salary">18K–30K · 期权</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── REQUIREMENTS ── -->
+  <div class="requirements">
+    <div class="section-title" style="margin-bottom:14px;">基本要求</div>
+    <div class="req-grid">
+      <div class="req-item"><span class="req-arrow">▸</span>国内外顶尖高校相关专业本科及以上学历</div>
+      <div class="req-item"><span class="req-arrow">▸</span>对机器人/具身智能赛道有强烈热情与使命感</div>
+      <div class="req-item"><span class="req-arrow">▸</span>扎实的数学基础（线代/优化/概率论）</div>
+      <div class="req-item"><span class="req-arrow">▸</span>有顶会论文/开源项目/竞赛经历者优先</div>
+      <div class="req-item"><span class="req-arrow">▸</span>优秀的自驱力，能在快节奏环境中成长</div>
+      <div class="req-item"><span class="req-arrow">▸</span>良好的团队协作能力与技术沟通能力</div>
+    </div>
+  </div>
+
+  <!-- ── BENEFITS ── -->
+  <div class="benefits">
+    <div class="section-title">我们提供</div>
+    <div class="benefits-grid">
+      <div class="benefit">
+        <div class="benefit-ico">💰</div>
+        <div class="benefit-title">有竞争力薪酬</div>
+        <div class="benefit-desc">行业Top 10%<br>+ 期权激励</div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-ico">🚀</div>
+        <div class="benefit-title">顶级研究平台</div>
+        <div class="benefit-desc">国家级联合实验室<br>最先进硬件资源</div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-ico">🌍</div>
+        <div class="benefit-title">全球成长机会</div>
+        <div class="benefit-desc">海外交流 · 顶会<br>参会资助</div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-ico">🏡</div>
+        <div class="benefit-title">弹性工作环境</div>
+        <div class="benefit-desc">弹性工时 · 远程<br>友好 · 无内耗</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── COMPANY ── -->
+  <div class="company-strip">
+    <div class="company-logo-area">ROBO<br>INTELLI</div>
+    <div class="company-info">
+      <div class="company-name">睿博智能科技有限公司</div>
+      <div class="company-desc">专注具身智能与人形机器人赛道，已获B+轮融资，估值超50亿元。核心团队来自清华/浙大/哈工大，与国内头部机器人孵化生态深度关联，产品已在制造业、医疗、特种场景实现商业化落地。</div>
+      <div class="company-tags">
+        <span class="ctag">B+轮融资</span>
+        <span class="ctag">人形机器人</span>
+        <span class="ctag">具身智能</span>
+        <span class="ctag">国家重点实验室关联</span>
+        <span class="ctag">商业化落地</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CTA FOOTER ── -->
+  <div class="cta-footer">
+    <div class="cta-left">
+      <div class="cta-title">立即加入，与顶尖团队共同定义下一代智能机器人</div>
+      <div class="cta-sub">投递简历 · 内推 · 实习均欢迎 · 应届/社招均可</div>
+      <div class="cta-contact">
+        <div class="contact-item">
+          <span class="contact-ico">✉</span>
+          <span>recruit@robointelli.ai</span>
+        </div>
+        <div class="contact-item">
+          <span class="contact-ico">📱</span>
+          <span>微信：RoboRecruit2025</span>
+        </div>
+        <div class="contact-item">
+          <span class="contact-ico">🌐</span>
+          <span>www.robointelli.ai/careers</span>
+        </div>
+      </div>
+    </div>
+    <div class="cta-right">
+      <div class="qr-box" id="qrBox"></div>
+      <div class="qr-box-label">扫码投递简历</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Generate decorative QR-like pattern
+(function(){
+  const box = document.getElementById('qrBox');
+  const cells = 7;
+  const grid = document.createElement('div');
+  grid.style.cssText='display:grid;grid-template-columns:repeat(7,9px);grid-template-rows:repeat(7,9px);gap:2px;padding:8px;';
+  // Position markers (corners)
+  const corners = new Set([0,1,2,3,4,5,6,7,13,14,20,21,27,28,34,35,41,42,43,44,45,46,47,48]);
+  const cornerInner = new Set([8,9,10,15,17,22,23,24]);
+  const cornerInner2 = new Set([2,3,4,9,11,16,17,18]);
+  for(let i=0;i<49;i++){
+    const c=document.createElement('div');
+    c.style.cssText='border-radius:1.5px;transition:opacity .3s;';
+    const r=Math.floor(i/7),col=i%7;
+    // Corner squares
+    const isCornerBlock=(r<=1&&col<=1)||(r<=1&&col>=5)||(r>=5&&col<=1);
+    if(isCornerBlock){
+      c.style.background='rgba(0,224,255,0.85)';
+    } else if(
+      (r===0&&col>=2&&col<=4)||(r===6&&col>=0&&col<=2)||(r>=2&&r<=4&&col===6)||
+      Math.random()<0.38
+    ){
+      const colors=['rgba(0,224,255,0.7)','rgba(77,255,145,0.5)','rgba(192,132,252,0.4)','rgba(255,204,68,0.4)'];
+      c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    } else {
+      c.style.background='rgba(255,255,255,0.04)';
+    }
+    grid.appendChild(c);
+  }
+  box.appendChild(grid);
+  // Animate random cells
+  setInterval(()=>{
+    const children=grid.children;
+    const idx=Math.floor(Math.random()*49);
+    const c=children[idx];
+    const r=Math.floor(idx/7),col=idx%7;
+    const isCornerBlock=(r<=1&&col<=1)||(r<=1&&col>=5)||(r>=5&&col<=1);
+    if(!isCornerBlock){
+      const was=parseFloat(c.style.opacity||1);
+      c.style.opacity=was>0.5?'0.15':'1';
+    }
+  },180);
+})();
+</script>
+</body>
+</html>
