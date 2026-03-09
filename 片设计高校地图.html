@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>芯图 - 中国顶尖高校芯片实验室聚合平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            background: #0a0a0a;
+            color: #e5e5e5;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .lab-card {
+            transition: all 0.3s ease;
+        }
+        .lab-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+        .tag {
+            background: rgba(102, 126, 234, 0.2);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+        .national-key {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+        }
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        #map-container {
+            height: 500px;
+            width: 100%;
+        }
+        .scroll-hidden::-webkit-scrollbar {
+            display: none;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-card border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-bold tracking-tight">芯图 <span class="text-gray-400 text-sm font-normal">ChipMap</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#labs" class="text-gray-300 hover:text-white transition">实验室</a>
+                    <a href="#map" class="text-gray-300 hover:text-white transition">分布地图</a>
+                    <a href="#stats" class="text-gray-300 hover:text-white transition">数据统计</a>
+                    <button onclick="toggleCompare()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-medium transition">对比实验室</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="text-center space-y-8">
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tight">
+                探索中国顶尖<br>
+                <span class="gradient-text">芯片设计实验室</span>
+            </h1>
+            <p class="max-w-2xl mx-auto text-xl text-gray-400 leading-relaxed">
+                聚合全国211及以上高校集成电路、微电子、半导体领域重点实验室，<br>
+                涵盖国家重点实验室、工程研究中心及前沿科研平台
+            </p>
+            <div class="flex justify-center gap-4 text-sm text-gray-500">
+                <span class="flex items-center gap-2"><div class="w-2 h-2 bg-red-500 rounded-full"></div>全国重点实验室</span>
+                <span class="flex items-center gap-2"><div class="w-2 h-2 bg-blue-500 rounded-full"></div>教育部重点实验室</span>
+                <span class="flex items-center gap-2"><div class="w-2 h-2 bg-green-500 rounded-full"></div>国家工程研究中心</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="sticky top-16 z-40 glass-card border-y border-gray-800 py-4 mb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-wrap gap-3 items-center justify-between">
+                <div class="flex flex-wrap gap-2" id="filter-container">
+                    <button class="filter-btn active px-4 py-2 rounded-full text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700 transition" data-filter="all">全部</button>
+                    <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700 transition" data-filter="national">全国重点实验室</button>
+                    <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700 transition" data-filter="design">集成电路设计</button>
+                    <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700 transition" data-filter="device">半导体器件</button>
+                    <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700 transition" data-filter="material">宽禁带半导体</button>
+                    <button class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-gray-800 text-gray-300 hover:bg-gray-700 transition" data-filter="process">工艺与制造</button>
+                </div>
+                <div class="relative">
+                    <input type="text" id="search-input" placeholder="搜索学校或实验室..." 
+                           class="bg-gray-800 border border-gray-700 rounded-full px-4 py-2 pl-10 text-sm focus:outline-none focus:border-blue-500 w-64">
+                    <svg class="w-4 h-4 text-gray-500 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Visualization -->
+    <section id="map" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
+        <div class="glass-card rounded-2xl p-6 border border-gray-800">
+            <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+                <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                实验室地理分布
+            </h2>
+            <div id="map-container" class="rounded-xl overflow-hidden bg-gray-900"></div>
+        </div>
+    </section>
+
+    <!-- Labs Grid -->
+    <section id="labs" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl font-bold">实验室详情</h2>
+            <span id="lab-count" class="text-gray-400 text-sm">共收录 32 个实验室</span>
+        </div>
+        
+        <div id="labs-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Lab cards will be injected here by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Statistics -->
+    <section id="stats" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass-card rounded-2xl p-6 border border-gray-800">
+                <div class="text-3xl font-bold text-blue-400 mb-2">32+</div>
+                <div class="text-gray-400">收录实验室</div>
+                <div class="text-xs text-gray-600 mt-2">覆盖985/211顶尖高校</div>
+            </div>
+            <div class="glass-card rounded-2xl p-6 border border-gray-800">
+                <div class="text-3xl font-bold text-purple-400 mb-2">15</div>
+                <div class="text-gray-400">全国重点实验室</div>
+                <div class="text-xs text-gray-600 mt-2">集成电路领域核心平台</div>
+            </div>
+            <div class="glass-card rounded-2xl p-6 border border-gray-800">
+                <div class="text-3xl font-bold text-green-400 mb-2">8</div>
+                <div class="text-gray-400">主要城市</div>
+                <div class="text-xs text-gray-600 mt-2">北京、上海、西安、成都等</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Compare Modal -->
+    <div id="compare-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-80 backdrop-blur-sm" onclick="toggleCompare()"></div>
+        <div class="absolute inset-x-4 top-20 bottom-20 md:inset-x-20 bg-gray-900 rounded-2xl border border-gray-700 overflow-hidden flex flex-col">
+            <div class="p-6 border-b border-gray-800 flex justify-between items-center">
+                <h3 class="text-2xl font-bold">实验室对比</h3>
+                <button onclick="toggleCompare()" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="flex-1 overflow-auto p-6" id="compare-content">
+                <p class="text-center text-gray-500 mt-20">请在实验室卡片中点击"加入对比"选择要比较的实验室</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lab Data based on search results
+        const labsData = [
+            {
+                id: 1,
+                name: "硅及先进半导体材料全国重点实验室",
+                university: "浙江大学",
+                type: "national",
+                tags: ["材料", "硅基", "半导体"],
+                city: "杭州",
+                coordinates: [120.1551, 30.2741],
+                director: "杨德仁院士",
+                focus: "硅材料、先进半导体材料研发",
+                achievements: "国家科学技术奖多项，CNS论文26篇",
+                level: "全国重点实验室",
+                website: "#"
+            },
+            {
+                id: 2,
+                name: "宽禁带半导体器件与集成技术全国重点实验室",
+                university: "西安电子科技大学",
+                type: "national",
+                tags: ["宽禁带", "器件", "集成"],
+                city: "西安",
+                coordinates: [108.9398, 34.3416],
+                director: "郝跃院士",
+                focus: "宽禁带半导体材料与器件、集成电路设计",
+                achievements: "7个全国重点实验室之一，电子科学与技术A+",
+                level: "全国重点实验室",
+                website: "#"
+            },
+            {
+                id: 3,
+                name: "电子薄膜与集成器件国家重点实验室",
+                university: "电子科技大学",
+                type: "national",
+                tags: ["电子薄膜", "集成器件", "材料"],
+                city: "成都",
+                coordinates: [104.0668, 30.5728],
+                director: "李言荣院士",
+                focus: "电子薄膜材料、集成器件技术",
+                achievements: "国家电磁辐射控制材料工程技术研究中心",
+                level: "国家重点实验室",
+                website: "#"
+            },
+            {
+                id: 4,
+                name: "专用集成电路与系统国家重点实验室",
+                university: "复旦大学",
+                type: "national",
+                tags: ["集成电路设计", "EDA", "SoC"],
+                city: "上海",
+                coordinates: [121.4737, 31.2304],
+                director: "曾璇教授",
+                focus: "集成电路设计方法学、SoC设计、EDA技术",
+                achievements: "全国高校唯一集成电路设计领域国重实验室",
+                level: "全国重点实验室",
+                website: "#"
+            },
+            {
+                id: 5,
+                name: "微纳电子器件与集成技术全国重点实验室",
+                university: "北京大学",
+                type: "national",
+                tags: ["微纳电子", "器件", "集成"],
+                city: "北京",
+                coordinates: [116.4074, 39.9042],
+                director: "黄如院士",
+                focus: "新型微纳电子器件、集成电路技术",
+                achievements: "微米纳米加工技术，集成电路高精尖创新中心",
+                level: "全国重点实验室",
+                website: "#"
+            },
+            {
+                id: 6,
+                name: "自旋芯片与技术全国重点实验室",
+                university: "北京航空航天大学",
+                type: "national",
+                tags: ["自旋芯片", "存储", "新型计算"],
+                city: "北京",
+                coordinates: [116.3974, 39.9842],
+                director: "赵巍胜教授",
+                focus: "自旋电子器件、新型存储芯片、AI芯片",
+                achievements: "3个全国重点实验室，ISSCC论文突破",
+                level: "全国重点实验室",
+                website: "#"
+            },
+            {
+                id: 7,
+                name: "毫米波全国重点实验室",
+                university: "东南大学",
+                type: "national",
+                tags: ["毫米波", "射频", "通信芯片"],
+                city: "南京",
+                coordinates: [118.7969, 32.0603],
+                director: "崔铁军院士",
+                focus: "毫米波技术、射频集成电路",
+                achievements: "移动通信全国重点实验室协同",
+                level: "全国重点实验室",
+                website: "#"
+            },
+            {
+                id: 8,
+                name: "数字感知芯片技术全国重点实验室",
+                university: "东南大学",
+                type: "national",
+                tags: ["感知芯片", "数字电路", "传感器"],
+                city: "南京",
+                coordinates: [118.8069, 32.0503],
+                director: "时龙兴教授",
+                focus: "数字感知芯片、智能传感器",
+                achievements: "国家专用集成电路系统工程技术研究中心",
+                level: "全国重点实验室",
+                website: "#"
+            },
+            {
+                id: 9,
+                name: "集成电路科学与工程学院",
+                university: "华中科技大学",
+                type: "education",
+                tags: ["集成电路", "光电", "存储"],
+                city: "武汉",
+                coordinates: [114.3054, 30.5931],
+                director: "缪向水教授",
+                focus: "集成电路设计、存储芯片、光电集成",
+                achievements: "强电磁技术全国重点实验室支撑",
+                level: "教育部重点实验室",
+                website: "#"
+            },
+            {
+                id: 10,
+                name: "交叉信息研究院",
+                university: "清华大学",
+                type: "national",
+                tags: ["量子计算", "人工智能芯片", "先进计算"],
+                city: "北京",
+                coordinates: [116.3267, 40.0033],
+                director: "姚期智院士",
+                focus: "量子信息科学、人工智能芯片",
+                achievements: "多个全国重点实验室，集成电路学院",
+                level: "全国重点实验室",
+                website: "#"
+            },
+            {
+                id: 11,
+                name: "微电子学院",
+                university: "上海交通大学",
+                type: "education",
+                tags: ["集成电路设计", "微纳加工", "功率器件"],
+                city: "上海",
+                coordinates: [121.4317, 31.0256],
+                director: "毛军发院士",
+                focus: "集成电路设计、微纳电子器件",
+                achievements: "微米纳米加工技术全国重点实验室（共建）",
+                level: "教育部重点实验室",
+                website: "#"
+            },
+            {
+                id: 12,
+                name: "半导体科学与技术学院",
+                university: "华南师范大学",
+                type: "provincial",
+                tags: ["半导体", "光电子", "集成电路"],
+                city: "佛山",
+                coordinates: [113.1214, 23.0215],
+                director: "李京波教授",
+                focus: "半导体材料与器件、集成电路设计",
+                achievements: "广东省芯片与集成技术重点实验室",
+                level: "省级重点实验室",
+                website: "#"
+            },
+            {
+                id: 13,
+                name: "微电子科学与工程学院",
+                university: "西安交通大学",
+                type: "education",
+                tags: ["宽禁带半导体", "功率器件", "集成电路"],
+                city: "西安",
+                coordinates: [108.9812, 34.2513],
+                director: "耿莉教授",
+                focus: "宽禁带半导体器件、集成电路设计",
+                achievements: "电子陶瓷与器件教育部重点实验室",
+                level: "教育部重点实验室",
+                website: "#"
+            },
+            {
+                id: 14,
+                name: "集成电路学院",
+                university: "中山大学",
+                type: "education",
+                tags: ["集成电路", "射频", "模拟电路"],
+                city: "广州",
+                coordinates: [113.2644, 23.1291],
+                director: "王阳元院士（兼职）",
+                focus: "射频集成电路、模拟电路设计",
+                achievements: "国家集成电路产教融合创新平台",
+                level: "教育部重点实验室",
+                website: "#"
+            },
+            {
+                id: 15,
+                name: "微电子学院",
+                university: "吉林大学",
+                type: "national",
+                tags: ["集成光电子", "MEMS", "传感器"],
+                city: "长春",
+                coordinates: [125.3235, 43.8171],
+                director: "孙洪波教授",
+                focus: "集成光电子学、微机电系统",
+                achievements: "集成光电子学国家重点实验室",
+                level: "国家重点实验室",
+                website: "#"
+            },
+            {
+                id: 16,
+                name: "物理科学与技术学院",
+                university: "兰州大学",
+                type: "education",
+                tags: ["半导体器件", "功率半导体", "光电器件"],
+                city: "兰州",
+                coordinates: [103.8343, 36.0611],
+                director: "薛德胜教授",
+                focus: "功率半导体及光电器件、半导体物理",
+                achievements: "甘肃省功率半导体及光电器件工程实验室",
+                level: "教育部重点实验室",
+                website: "#"
+            },
+            {
+                id: 17,
+                name: "微电子学院",
+                university: "北京理工大学",
+                type: "education",
+                tags: ["MEMS", "微系统", "传感器"],
+                city: "北京",
+                coordinates: [116.3161, 39.9592],
+                director: "谢会开教授",
+                focus: "MEMS与微系统、传感器技术",
+                achievements: "毫米波与太赫兹技术研究所",
+                level: "教育部重点实验室",
+                website: "#"
+            },
+            {
+                id: 18,
+                name: "电子信息工程学院",
+                university: "天津大学",
+                type: "education",
+                tags: ["微电子", "集成电路", "电子科学与技术"],
+                city: "天津",
+                coordinates: [117.2009, 39.0842],
+                director: "马建国教授",
+                focus: "集成电路设计、微电子器件",
+                achievements: "天津市集成电路设计技术培训中心",
+                level: "教育部重点实验室",
+                website: "#"
+            },
+            {
+                id: 19,
+                name: "微电子学院",
+                university: "南京大学",
+                type: "national",
+                tags: ["自旋芯片", "固态物理", "微纳器件"],
+                city: "南京",
+                coordinates: [118.7969, 32.0603],
+                director: "施毅教授",
+                focus: "自旋电子学、固态微结构",
+                achievements: "固体微结构物理国家重点实验室",
+                level: "全国重点实验室",
+                website: "#"
+            },
+            {
+                id: 20,
+                name: "集成电路学院",
+                university: "哈尔滨工业大学",
+                type: "education",
+                tags: ["MEMS", "传感器", "微纳加工"],
+                city: "哈尔滨",
+                coordinates: [126.5349, 45.8038],
+                director: "刘晓为教授",
+                focus: "MEMS传感器、微纳加工技术",
+                achievements: "微系统与微结构制造教育部重点实验室",
+                level: "教育部重点实验室",
+                website: "#"
+            },
+            {
+                id: 21,
+                name: "电子科学与工程学院",
+                university: "西北工业大学",
+                type: "education",
+                tags: ["微电子", "集成电路", "航空电子"],
+                city: "西安",
+                coordinates: [108.9138, 34.2465],
+                director: "周德云教授",
+                focus: "航空微电子、集成电路设计",
+                achievements: "航空微电子技术中心",
+                level: "教育部重点实验室",
+                website: "#"
+            },
+            {
+                id: 22,
+                name: "微电子学院",
+                university: "同济大学",
+                type: "education",
+                tags: ["汽车电子", "功率半导体", "集成电路"],
+                city: "上海",
+                coordinates: [121.5055, 31.2317],
+                director: "童美松教授",
+                focus: "汽车电子芯片、功率半导体",
+                achievements: "上海市汽车电子芯片工程中心",
+                level: "教育部重点实验室",
+                website: "#"
+            },
+            {
+                id: 23,
+                name: "集成电路学院",
+                university: "中国科学院大学",
+                type: "national",
+                tags: ["微纳加工", "器件物理", "EDA"],
+                city: "北京",
+                coordinates: [116.3376, 39.9822],
+                director: "叶甜春研究员",
+                focus: "集成电路制造技术、微纳加工",
+                achievements: "微电子研究所、微电子器件与集成技术重点实验室",
+                level: "国家重点实验室",
+                website: "#"
+            },
+            {
+                id: 24,
+                name: "微电子学院",
+                university: "南开大学",
+                type: "education",
+                tags: ["光电子", "半导体", "集成电路"],
+                city: "天津",
+                coordinates: [117.1713, 39.1092],
+                director: "张伟刚教授",
+                focus: "光电子器件、半导体材料",
+                achievements: "光电子薄膜器件与技术重点实验室",
+                level: "教育部重点实验室",
+                website: "#"
+            },
+            {
+                id: 25,
+                name: "电子信息与电气工程学院",
+                university: "山东大学",
+                type: "education",
+                tags: ["半导体材料", "集成电路", "晶体材料"],
+                city: "济南",
+                coordinates: [117.0248, 36.6828],
+                director: "陶绪堂教授",
+                focus: "半导体晶体材料、集成电路",
+                achievements: "新一代半导体材料研究院",
+                level: "教育部重点实验室",
+                website: "#"
+            },
+            {
+                id: 26,
+                name: "微电子学院",
+                university: "厦门大学",
+                type: "education",
+                tags: ["半导体", "集成电路", "光伏"],
+                city: "厦门",
+                coordinates: [118.0964, 24.4393],
+                director: "陈忠教授",
+                focus: "半导体器件、集成电路设计",
+                achievements: "福建省集成电路设计工程技术研究中心",
+                level: "省级重点实验室",
+                website: "#"
+            },
+            {
+                id: 27,
+                name: "电子科学与工程学院",
+                university: "大连理工大学",
+                type: "education",
+                tags: ["集成电路", "微电子", "光电子"],
+                city: "大连",
+                coordinates: [121.5257, 38.9194],
+                director: "赵毅教授",
+                focus: "集成电路设计、微电子器件",
+                achievements: "辽宁省集成电路技术重点实验室",
+                level: "教育部重点实验室",
+                website: "#"
+            },
+            {
+                id: 28,
+                name: "微电子学院",
+                university: "华东师范大学",
+                type: "education",
+                tags: ["集成电路", "半导体", "通信芯片"],
+                city: "上海",
+                coordinates: [121.4026, 31.2285],
+                director: "石艳玲教授",
+                focus: "集成电路设计、通信芯片",
+                achievements: "上海市多维度信息处理重点实验室",
+                level: "教育部重点实验室",
+                website: "#"
+            },
+            {
+                id: 29,
+                name: "集成电路学院",
+                university: "南方科技大学",
+                type: "education",
+                tags: ["集成电路", "第三代半导体", "EDA"],
+                city: "深圳",
+                coordinates: [113.9973, 22.5943],
+                director: "于洪宇教授",
+                focus: "第三代半导体、集成电路设计",
+                achievements: "深港微电子学院",
+                level: "教育部重点实验室",
+                website: "#"
+            },
+            {
+                id: 30,
+                name: "微电子学院",
+                university: "杭州电子科技大学",
+                type: "provincial",
+                tags: ["集成电路设计", "EDA", "射频"],
+                city: "杭州",
+                coordinates: [120.3486, 30.3188],
+                director: "程知群教授",
+                focus: "集成电路设计、射频技术",
+                achievements: "浙江省集成电路设计重点实验室",
+                level: "省级重点实验室",
+                website: "#"
+            },
+            {
+                id: 31,
+                name: "微电子学院",
+                university: "重庆大学",
+                type: "education",
+                tags: ["功率半导体", "集成电路", "MEMS"],
+                city: "重庆",
+                coordinates: [106.5516, 29.5630],
+                director: "蔡开勇教授",
+                focus: "功率半导体、MEMS器件",
+                achievements: "重庆市微纳制造与系统集成工程技术研究中心",
+                level: "教育部重点实验室",
+                website: "#"
+            },
+            {
+                id: 32,
+                name: "集成电路学院",
+                university: "湖南大学",
+                type: "education",
+                tags: ["半导体", "集成电路", "功率器件"],
+                city: "长沙",
+                coordinates: [112.9388, 28.2282],
+                director: "刘渊教授",
+                focus: "低维半导体器件、集成电路",
+                achievements: "国家卓越工程师学院",
+                level: "教育部重点实验室",
+                website: "#"
+            }
+        ];
+
+        let selectedLabs = [];
+        let currentFilter = 'all';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderLabs(labsData);
+            initMap();
+            setupFilters();
+            setupSearch();
+        });
+
+        // Render Lab Cards
+        function renderLabs(data) {
+            const grid = document.getElementById('labs-grid');
+            const count = document.getElementById('lab-count');
+            grid.innerHTML = '';
+            count.textContent = `共收录 ${data.length} 个实验室`;
+
+            data.forEach((lab, index) => {
+                const card = document.createElement('div');
+                card.className = 'lab-card glass-card rounded-xl p-6 border border-gray-800 animate-fade-in';
+                card.style.animationDelay = `${index * 0.05}s`;
+                
+                const isNational = lab.level.includes('全国') || lab.level.includes('国家');
+                const levelClass = isNational ? 'national-key' : 'tag';
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex-1">
+                            <h3 class="text-lg font-bold text-white mb-1 line-clamp-2">${lab.name}</h3>
+                            <p class="text-blue-400 font-medium">${lab.university}</p>
+                        </div>
+                        <span class="${levelClass} px-2 py-1 rounded text-xs font-medium whitespace-nowrap ml-2">
+                            ${lab.level}
+                        </span>
+                    </div>
+                    
+                    <div class="space-y-3 mb-4">
+                        <div class="flex items-center text-sm text-gray-400">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            ${lab.city}
+                        </div>
+                        <div class="flex items-center text-sm text-gray-400">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                            ${lab.director}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <p class="text-sm text-gray-300 line-clamp-2 mb-2">${lab.focus}</p>
+                        <p class="text-xs text-gray-500 line-clamp-1">代表成果：${lab.achievements}</p>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        ${lab.tags.map(tag => `<span class="text-xs bg-gray-800 text-gray-300 px-2 py-1 rounded">${tag}</span>`).join('')}
+                    </div>
+
+                    <div class="flex gap-2 pt-4 border-t border-gray-800">
+                        <button onclick="toggleLabSelection(${lab.id})" 
+                                class="flex-1 py-2 rounded-lg text-sm font-medium transition ${selectedLabs.includes(lab.id) ? 'bg-green-600 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'}">
+                            ${selectedLabs.includes(lab.id) ? '已选择' : '加入对比'}
+                        </button>
+                        <a href="${lab.website}" target="_blank" 
+                           class="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white transition">
+                            访问官网
+                        </a>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Setup Filters
+        function setupFilters() {
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    buttons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filter = this.dataset.filter;
+                    currentFilter = filter;
+                    
+                    let filtered = labsData;
+                    if (filter === 'national') {
+                        filtered = labsData.filter(lab => lab.level.includes('全国') || lab.level.includes('国家'));
+                    } else if (filter === 'design') {
+                        filtered = labsData.filter(lab => lab.tags.some(t => ['集成电路设计', 'EDA', 'SoC', '数字电路'].includes(t)));
+                    } else if (filter === 'device') {
+                        filtered = labsData.filter(lab => lab.tags.some(t => ['器件', '半导体器件', '功率器件'].includes(t)));
+                    } else if (filter === 'material') {
+                        filtered = labsData.filter(lab => lab.tags.some(t => ['宽禁带', '半导体材料', '硅基', '材料'].includes(t)));
+                    } else if (filter === 'process') {
+                        filtered = labsData.filter(lab => lab.tags.some(t => ['工艺', '制造', '微纳加工', 'MEMS'].includes(t)));
+                    }
+                    
+                    renderLabs(filtered);
+                });
+            });
+        }
+
+        // Setup Search
+        function setupSearch() {
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', function(e) {
+                const query = e.target.value.toLowerCase();
+                const filtered = labsData.filter(lab => 
+                    lab.name.toLowerCase().includes(query) || 
+                    lab.university.toLowerCase().includes(query) ||
+                    lab.city.toLowerCase().includes(query)
+                );
+                renderLabs(filtered);
+            });
+        }
+
+        // Toggle Lab Selection for Comparison
+        function toggleLabSelection(id) {
+            const index = selectedLabs.indexOf(id);
+            if (index > -1) {
+                selectedLabs.splice(index, 1);
+            } else {
+                if (selectedLabs.length >= 3) {
+                    alert('最多可同时对比3个实验室');
+                    return;
+                }
+                selectedLabs.push(id);
+            }
+            renderLabs(currentFilter === 'all' ? labsData : labsData.filter(lab => {
+                if (currentFilter === 'national') return lab.level.includes('全国') || lab.level.includes('国家');
+                // Add other filter logic if needed
+                return true;
+            }));
+        }
+
+        // Toggle Compare Modal
+        function toggleCompare() {
+            const modal = document.getElementById('compare-modal');
+            const content = document.getElementById('compare-content');
+            
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                updateCompareContent();
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        // Update Compare Content
+        function updateCompareContent() {
+            const content = document.getElementById('compare-content');
+            if (selectedLabs.length === 0) {
+                content.innerHTML = '<p class="text-center text-gray-500 mt-20">请在实验室卡片中点击"加入对比"选择要比较的实验室（最多3个）</p>';
+                return;
+            }
+
+            const selected = labsData.filter(lab => selectedLabs.includes(lab.id));
+            const rows = ['university', 'level', 'director', 'city', 'focus', 'achievements', 'tags'];
+            const rowNames = {
+                university: '所属高校',
+                level: '平台等级',
+                director: '负责人',
+                city: '所在城市',
+                focus: '研究方向',
+                achievements: '代表成果',
+                tags: '技术标签'
+            };
+
+            let html = '<div class="overflow-x-auto"><table class="w-full text-left border-collapse">';
+            
+            // Header
+            html += '<tr class="border-b border-gray-700"><th class="p-4 text-gray-400 font-medium">对比项</th>';
+            selected.forEach(lab => {
+                html += `<th class="p-4 text-white font-bold min-w-[200px]">${lab.name}</th>`;
+            });
+            html += '</tr>';
+
+            // Rows
+            rows.forEach(row => {
+                html += `<tr class="border-b border-gray-800 hover:bg-gray-800/50"><td class="p-4 text-gray-400 font-medium">${rowNames[row]}</td>`;
+                selected.forEach(lab => {
+                    let value = lab[row];
+                    if (row === 'tags') value = value.join(', ');
+                    html += `<td class="p-4 text-gray-300">${value}</td>`;
+                });
+                html += '</tr>';
+            });
+
+            html += '</table></div>';
+            content.innerHTML = html;
+        }
+
+        // Initialize ECharts Map
+        function initMap() {
+            const chartDom = document.getElementById('map-container');
+            const myChart = echarts.init(chartDom);
+            
+            // Group labs by city
+            const cityData = {};
+            labsData.forEach(lab => {
+                if (!cityData[lab.city]) {
+                    cityData[lab.city] = [];
+                }
+                cityData[lab.city].push(lab);
+            });
+
+            const data = Object.keys(cityData).map(city => {
+                const labs = cityData[city];
+                const firstLab = labs[0];
+                return {
+                    name: city,
+                    value: [...firstLab.coordinates, labs.length],
+                    labs: labs
+                };
+            });
+
+            const option = {
+                backgroundColor: 'transparent',
+                tooltip: {
+                    trigger: 'item',
+                    backgroundColor: 'rgba(30, 30, 30, 0.9)',
+                    borderColor: '#444',
+                    textStyle: { color: '#fff' },
+                    formatter: function(params) {
+                        const labs = params.data.labs;
+                        let html = `<div class="font-bold mb-2">${params.name} (${labs.length}个实验室)</div>`;
+                        labs.forEach(lab => {
+                            const isNational = lab.level.includes('全国') || lab.level.includes('国家');
+                            const color = isNational ? '#ef4444' : '#3b82f6';
+                            html += `<div class="text-sm mb-1"><span style="color:${color}">●</span> ${lab.name}</div>`;
+                        });
+                        return html;
+                    }
+                },
+                geo: {
+                    map: 'china',
+                    roam: true,
+                    zoom: 1.2,
+                    center: [105, 36],
+                    itemStyle: {
+                        areaColor: 'rgba(255, 255, 255, 0.05)',
+                        borderColor: 'rgba(255, 255, 255, 0.2)',
+                        borderWidth: 1
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            areaColor: 'rgba(102, 126, 234, 0.3)'
+                        }
+                    }
+                },
+                series: [
+                    {
+                        type: 'scatter',
+                        coordinateSystem: 'geo',
+                        data: data,
+                        symbolSize: function(val) {
+                            return Math.max(val[2] * 8, 12);
+                        },
+                        label: {
+                            show: true,
+                            formatter: '{b}',
+                            position: 'right',
+                            color: '#fff',
+                            fontSize: 10
+                        },
+                        itemStyle: {
+                            color: function(params) {
+                                const hasNational = params.data.labs.some(l => l.level.includes('全国') || l.level.includes('国家'));
+                                return hasNational ? '#ef4444' : '#3b82f6';
+                            },
+                            shadowBlur: 10,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        },
+                        emphasis: {
+                            scale: 1.5,
+                            label: { show: true }
+                        }
+                    }
+                ]
+            };
+
+            // Load China map
+            fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
+                .then(response => response.json())
+                .then(geoJson => {
+                    echarts.registerMap('china', geoJson);
+                    myChart.setOption(option);
+                })
+                .catch(() => {
+                    // Fallback if map data fails to load
+                    chartDom.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500">地图加载中...</div>';
+                });
+
+            window.addEventListener('resize', () => myChart.resize());
+        }
+    </script>
+</body>
+</html>
